@@ -6,7 +6,7 @@ export default class Platform extends Container {
     const view = new Graphics();
     view
       .setStrokeStyle({ width: 1, color: 0x00ff00 })
-      .rect(0, 0, 300, 30)
+      .rect(0, 0, 200, 30)
       .stroke();
 
     this.addChild(view);
