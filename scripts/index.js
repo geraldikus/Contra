@@ -1,13 +1,20 @@
 import Game from "./Game.js";
 import * as PIXI from "pixi.js";
 
-const _pixiApp = new PIXI.Application();
-await _pixiApp.init({
+const pixiApp = new PIXI.Application();
+await pixiApp.init({
   width: 1024,
   height: 868,
 });
 
-const game = new Game(_pixiApp);
+const game = new Game(pixiApp);
 
-_pixiApp.ticker.add(game.update, game);
-document.body.appendChild(_pixiApp.canvas);
+document.body.appendChild(pixiApp.canvas);
+document.addEventListener("keydown", function (key) {
+  game.onKeyDown(key);
+});
+document.addEventListener("keyup", function (key) {
+  game.onKeyUp(key);
+});
+
+pixiApp.ticker.add(game.update, game);
