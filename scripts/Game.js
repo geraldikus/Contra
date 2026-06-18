@@ -1,11 +1,13 @@
 import Hero from "./Entity/Hero.js";
 import Platform from "./Entity/Platforms/Platform.js";
 import PlatformFactory from "./Entity/Platforms/PlatformFactory.js";
+import KeyboardProcessor from "./KeyboardProcessor.js";
 
 export default class Game {
   #pixiApp;
   #hero;
   #platforms = [];
+  keyboardProcessor;
 
   constructor(pixiApp) {
     this.#pixiApp = pixiApp;
@@ -17,24 +19,30 @@ export default class Game {
 
     const platformFactory = new PlatformFactory(this.#pixiApp);
 
-    // const platfom1 = new Platform();
-    // platfom1.x = 50;
-    // platfom1.y = 400;
-    // this.#pixiApp.stage.addChild(platfom1);
-
-    // const platfom2 = new Platform();
-    // platfom2.x = 200;
-    // platfom2.y = 450;
-    // this.#pixiApp.stage.addChild(platfom2);
-
-    // const platfom3 = new Platform();
-    // platfom3.x = 400;
-    // platfom3.y = 400;
-    // this.#pixiApp.stage.addChild(platfom3);
-
     this.#platforms.push(platformFactory.createPlatform(50, 400));
     this.#platforms.push(platformFactory.createPlatform(200, 450));
     this.#platforms.push(platformFactory.createPlatform(400, 400));
+
+    this.keyboardProcessor = new KeyboardProcessor(this);
+
+    this.keyboardProcessor.getButton("ArrowUp").executeDown = function () {
+      this.#hero.jump();
+    };
+    this.keyboardProcessor.getButton("KeyS").executeDown = function () {
+      this.#hero.jump();
+    };
+    this.keyboardProcessor.getButton("ArrowLeft").executeDown = function () {
+      this.#hero.startLeftMove();
+    };
+    this.keyboardProcessor.getButton("ArrowLeft").executeUp = function () {
+      this.#hero.stopLeftMove();
+    };
+    this.keyboardProcessor.getButton("ArrowRight").executeDown = function () {
+      this.#hero.startRightMove();
+    };
+    this.keyboardProcessor.getButton("ArrowRight").executeUp = function () {
+      this.#hero.stopRightMove();
+    };
   }
 
   update() {
@@ -72,44 +80,6 @@ export default class Game {
     ) {
       // console.log("Collision");
       return true;
-    }
-  }
-
-  onKeyDown(key) {
-    const LEFT = 37;
-    const RIGHT = 39;
-    const UP = 38;
-    const DOWN = 40;
-    const A = 65;
-    const S = 83;
-
-    if (key.keyCode == LEFT) {
-      this.#hero.startLeftMove();
-    }
-
-    if (key.keyCode == RIGHT) {
-      this.#hero.startRightMove();
-    }
-
-    if (key.keyCode == S) {
-      this.#hero.jump();
-    }
-  }
-
-  onKeyUp(key) {
-    const LEFT = 37;
-    const RIGHT = 39;
-    const UP = 38;
-    const DOWN = 40;
-    const A = 65;
-    const S = 83;
-
-    if (key.keyCode == LEFT) {
-      this.#hero.stopLeftMove();
-    }
-
-    if (key.keyCode == RIGHT) {
-      this.#hero.stopRightMove();
     }
   }
 }
