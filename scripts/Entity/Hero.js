@@ -3,12 +3,13 @@ import { Container, Graphics, State } from "pixi.js";
 const States = {
   Stay: "stay",
   Jump: "jump",
+  FlyDown: "flydown",
 };
 
 export default class Hero extends Container {
   #GRAVITY_FORCE = 0.03;
   #SPEED = 2;
-  #JUMP_FORCE = 2;
+  #JUMP_FORCE = 3.5;
   #velocityX = 0;
   #velocityY = 0;
 
@@ -40,6 +41,10 @@ export default class Hero extends Container {
     this.#velocityX = this.#movement.x * this.#SPEED;
     this.x += this.#velocityX;
 
+    if (this.#velocityY > 0 && this.isJumpState()) {
+      this.#state = States.FlyDown;
+    }
+
     this.#velocityY += this.#GRAVITY_FORCE;
     this.y += this.#velocityY;
   }
@@ -50,11 +55,15 @@ export default class Hero extends Container {
   }
 
   jump() {
-    if (this.#state == States.Jump) {
+    if (this.#state == States.Jump || this.#state == States.FlyDown) {
       return;
     }
     this.#state = States.Jump;
     this.#velocityY -= this.#JUMP_FORCE;
+  }
+
+  isJumpState() {
+    return this.#state == States.Jump;
   }
 
   startLeftMove() {
@@ -87,5 +96,21 @@ export default class Hero extends Container {
   stopRightMove() {
     this.#directionContext.right = 0;
     this.#movement.x = this.#directionContext.left;
+  }
+
+  #rect = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  };
+
+  getRect() {
+    this.#rect.x = this.x;
+    this.#rect.y = this.y;
+    this.#rect.width = this.width;
+    this.#rect.height = this.height;
+
+    return this.#rect;
   }
 }
