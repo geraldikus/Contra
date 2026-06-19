@@ -49,7 +49,7 @@ export default class KeyboardProcessor {
     }
   }
 
-  isButtonsPressed(keyName) {
+  isButtonPressed(keyName) {
     return this.#keyMap[keyName].isDown;
   }
 }

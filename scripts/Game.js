@@ -107,10 +107,21 @@ export default class Game {
 
   setKeys() {
     this.keyboardProcessor.getButton("ArrowUp").executeDown = function () {
-      this.#hero.jump();
+      // if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
+      //   this.#hero.throwDown();
+      // } else {
+      //   this.#hero.jump();
+      // }
+
+      this.customJump();
     };
     this.keyboardProcessor.getButton("KeyS").executeDown = function () {
-      this.#hero.jump();
+      // if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
+      //   this.#hero.throwDown();
+      // } else {
+      //   this.#hero.jump();
+      // }
+      this.customJump();
     };
     this.keyboardProcessor.getButton("ArrowLeft").executeDown = function () {
       this.#hero.startLeftMove();
@@ -124,5 +135,13 @@ export default class Game {
     this.keyboardProcessor.getButton("ArrowRight").executeUp = function () {
       this.#hero.stopRightMove();
     };
+  }
+
+  customJump() {
+    if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
+      this.#hero.throwDown();
+    } else {
+      this.#hero.jump();
+    }
   }
 }
