@@ -1,5 +1,6 @@
 import { PlaneGeometry } from "pixi.js";
 import Platform from "./Platform";
+import Box from "./Box";
 
 export default class PlatformFactory {
   #pixiApp;
@@ -14,5 +15,14 @@ export default class PlatformFactory {
     this.#pixiApp.stage.addChild(platfom);
 
     return platfom;
+  }
+
+  createBox(x, y) {
+    const box = new Box();
+    box.x = x;
+    box.y = y;
+    this.#pixiApp.stage.addChild(box);
+
+    return box;
   }
 }

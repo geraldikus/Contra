@@ -2,6 +2,7 @@ import Hero from "./Entity/Hero.js";
 import Platform from "./Entity/Platforms/Platform.js";
 import PlatformFactory from "./Entity/Platforms/PlatformFactory.js";
 import KeyboardProcessor from "./KeyboardProcessor.js";
+import Box from "./Entity/Platforms/Box.js";
 
 export default class Game {
   #pixiApp;
@@ -27,10 +28,12 @@ export default class Game {
 
     this.#platforms.push(platformFactory.createPlatform(300, 550));
 
-    this.#platforms.push(platformFactory.createPlatform(0, 738));
-    this.#platforms.push(platformFactory.createPlatform(200, 738));
+    this.#platforms.push(platformFactory.createBox(0, 738));
+    this.#platforms.push(platformFactory.createBox(200, 738));
 
-    this.#platforms.push(platformFactory.createPlatform(400, 708));
+    const box = platformFactory.createBox(400, 708);
+    box.isStep = true;
+    this.#platforms.push(box);
 
     this.keyboardProcessor = new KeyboardProcessor(this);
     this.setKeys();
@@ -45,7 +48,7 @@ export default class Game {
     this.#hero.update();
 
     for (let i = 0; i < this.#platforms.length; i++) {
-      if (this.#hero.isJumpState()) {
+      if (this.#hero.isJumpState() && this.#platforms[i].type != "box") {
         continue;
       }
 
@@ -56,7 +59,7 @@ export default class Game {
       );
 
       if (collisionResult.vertical == true) {
-        this.#hero.stay();
+        this.#hero.stay(this.#platforms[i].y);
       }
     }
   }
@@ -90,6 +93,12 @@ export default class Game {
     if (collisionResult.vertical == true) {
       character.y = prevPoint.y;
     }
+    if (collisionResult.horizontal == true && platform.type == "box") {
+      if (platform.isStep) {
+        character.stay(platform.y);
+      }
+      character.x = prevPoint.x;
+    }
     return collisionResult;
   }
 
@@ -107,20 +116,9 @@ export default class Game {
 
   setKeys() {
     this.keyboardProcessor.getButton("ArrowUp").executeDown = function () {
-      // if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
-      //   this.#hero.throwDown();
-      // } else {
-      //   this.#hero.jump();
-      // }
-
       this.customJump();
     };
     this.keyboardProcessor.getButton("KeyS").executeDown = function () {
-      // if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
-      //   this.#hero.throwDown();
-      // } else {
-      //   this.#hero.jump();
-      // }
       this.customJump();
     };
     this.keyboardProcessor.getButton("ArrowLeft").executeDown = function () {

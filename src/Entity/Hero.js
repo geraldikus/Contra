@@ -7,9 +7,9 @@ const States = {
 };
 
 export default class Hero extends Container {
-  #GRAVITY_FORCE = 0.03;
-  #SPEED = 2;
-  #JUMP_FORCE = 3.5;
+  #GRAVITY_FORCE = 0.2;
+  #SPEED = 2.5;
+  #JUMP_FORCE = 9;
   #velocityX = 0;
   #velocityY = 0;
 
@@ -25,16 +25,25 @@ export default class Hero extends Container {
 
   #state = States.Stay;
 
+  #bounds = {
+    width: 20,
+    height: 90,
+  };
+
   constructor() {
     super();
     const view = new Graphics();
 
     view
-      .setStrokeStyle({ width: 1, color: 0xff0000 })
-      .rect(0, 0, 20, 60)
+      .setStrokeStyle({ width: 1, color: 0xffff00 })
+      .rect(0, 0, 20, 90)
+      .rect(0, 30, 60, 10)
       .stroke();
 
     this.addChild(view);
+    view.pivot.x = 10;
+    view.x = 10;
+    view.scale.x *= -1;
   }
 
   update() {
@@ -49,9 +58,11 @@ export default class Hero extends Container {
     this.y += this.#velocityY;
   }
 
-  stay() {
+  stay(platformY) {
     this.#state = States.Stay;
     this.#velocityY = 0;
+
+    this.y = platformY - this.#bounds.height;
   }
 
   jump() {
@@ -112,8 +123,8 @@ export default class Hero extends Container {
   getRect() {
     this.#rect.x = this.x;
     this.#rect.y = this.y;
-    this.#rect.width = this.width;
-    this.#rect.height = this.height;
+    this.#rect.width = this.#bounds.width;
+    this.#rect.height = this.#bounds.height;
 
     return this.#rect;
   }
