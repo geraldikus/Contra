@@ -1,4 +1,5 @@
 import { Container, Graphics, State } from "pixi.js";
+import HeroView from "./HeroView";
 
 const States = {
   Stay: "stay",
@@ -6,7 +7,7 @@ const States = {
   FlyDown: "flydown",
 };
 
-export default class Hero extends Container {
+export default class Hero {
   #GRAVITY_FORCE = 0.2;
   #SPEED = 2.5;
   #JUMP_FORCE = 9;
@@ -25,25 +26,31 @@ export default class Hero extends Container {
 
   #state = States.Stay;
 
-  #bounds = {
-    width: 20,
-    height: 90,
-  };
+  #view;
 
-  constructor() {
-    super();
-    const view = new Graphics();
+  constructor(stage) {
+    this.#view = new HeroView();
+    stage.addChild(this.#view);
+  }
 
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(0, 0, 20, 90)
-      .rect(0, 30, 60, 10)
-      .stroke();
+  get collisionBox() {
+    return this.#view.collisionBox;
+  }
 
-    this.addChild(view);
-    view.pivot.x = 10;
-    view.x = 10;
-    view.scale.x *= -1;
+  get x() {
+    return this.#view.x;
+  }
+
+  set x(value) {
+    this.#view.x = value;
+  }
+
+  get y() {
+    return this.#view.y;
+  }
+
+  set y(value) {
+    this.#view.y = value;
   }
 
   update() {
@@ -62,7 +69,7 @@ export default class Hero extends Container {
     this.#state = States.Stay;
     this.#velocityY = 0;
 
-    this.y = platformY - this.#bounds.height;
+    this.y = platformY - this.#view.collisionBox.height;
   }
 
   jump() {
@@ -111,21 +118,5 @@ export default class Hero extends Container {
   stopRightMove() {
     this.#directionContext.right = 0;
     this.#movement.x = this.#directionContext.left;
-  }
-
-  #rect = {
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  };
-
-  getRect() {
-    this.#rect.x = this.x;
-    this.#rect.y = this.y;
-    this.#rect.width = this.#bounds.width;
-    this.#rect.height = this.#bounds.height;
-
-    return this.#rect;
   }
 }
