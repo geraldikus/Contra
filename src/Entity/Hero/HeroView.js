@@ -59,10 +59,6 @@ export default class HeroView extends Container {
   }
 
   showStayUp() {
-    this.#toState("stay");
-  }
-
-  showStay() {
     this.#toState("stayUp");
   }
 
@@ -109,6 +105,12 @@ export default class HeroView extends Container {
     this.#stm.currentState = key;
   }
 
+  #createNodeStructure() {
+    const rootNode = new Container();
+    this.addChild(rootNode);
+    this.#rootNode = rootNode;
+  }
+
   #getStayImage() {
     const view = new Graphics();
     view
@@ -117,12 +119,6 @@ export default class HeroView extends Container {
       .rect(0, 30, 70, 5)
       .stroke();
     return view;
-  }
-
-  #createNodeStructure() {
-    const rootNode = new Container();
-    this.addChild(rootNode);
-    this.#rootNode = rootNode;
   }
 
   #getStayUpImage() {

@@ -8,9 +8,9 @@ const States = {
 };
 
 export default class Hero {
-  #GRAVITY_FORCE = 0.2;
+  #GRAVITY_FORCE = 0.2; // was 0.2
   #SPEED = 2.5;
-  #JUMP_FORCE = 9;
+  #JUMP_FORCE = 9; // was 9
   #velocityX = 0;
   #velocityY = 0;
 
@@ -26,11 +26,17 @@ export default class Hero {
 
   #state = States.Stay;
 
+  #isLay = false;
+  #isStayUp = false;
+
   #view;
 
   constructor(stage) {
     this.#view = new HeroView();
     stage.addChild(this.#view);
+
+    this.#state = States.Jump;
+    this.#view.showJump();
   }
 
   get collisionBox() {
@@ -57,7 +63,10 @@ export default class Hero {
     this.#velocityX = this.#movement.x * this.#SPEED;
     this.x += this.#velocityX;
 
-    if (this.#velocityY > 0 && this.isJumpState()) {
+    if (this.#velocityY > 0) {
+      if (!(this.#state == States.Jump || this.#state == States.FlyDown)) {
+        this.#view.showFall();
+      }
       this.#state = States.FlyDown;
     }
 
@@ -66,6 +75,15 @@ export default class Hero {
   }
 
   stay(platformY) {
+    if (this.#state == States.Jump || this.#state == States.FlyDown) {
+      const fakeButtonsContext = {};
+      fakeButtonsContext.arrowLeft = this.#movement.x == -1;
+      fakeButtonsContext.arrowRight = this.#movement.x == 1;
+      fakeButtonsContext.arrowDown = this.#isLay;
+      fakeButtonsContext.arrowUp = this.#isStayUp;
+      this.#state = States.Stay;
+      this.setView(fakeButtonsContext);
+    }
     this.#state = States.Stay;
     this.#velocityY = 0;
 
@@ -78,6 +96,7 @@ export default class Hero {
     }
     this.#state = States.Jump;
     this.#velocityY -= this.#JUMP_FORCE;
+    this.#view.showJump();
   }
 
   isJumpState() {
@@ -86,6 +105,7 @@ export default class Hero {
 
   throwDown() {
     this.#state = States.Jump;
+    this.#view.showFall();
   }
 
   startLeftMove() {
@@ -118,5 +138,33 @@ export default class Hero {
   stopRightMove() {
     this.#directionContext.right = 0;
     this.#movement.x = this.#directionContext.left;
+  }
+
+  setView(buttonContext) {
+    this.#view.flip(this.#movement.x);
+    this.#isLay = buttonContext.arrowDown;
+    this.#isStayUp = buttonContext.arrowUp;
+
+    if (this.#state == States.Jump || this.#state == States.FlyDown) {
+      return;
+    }
+
+    if (buttonContext.arrowLeft || buttonContext.arrowRight) {
+      if (buttonContext.arrowUp) {
+        this.#view.showRunUp();
+      } else if (buttonContext.arrowDown) {
+        this.#view.showRunDown();
+      } else {
+        this.#view.showRun();
+      }
+    } else {
+      if (buttonContext.arrowUp) {
+        this.#view.showStayUp();
+      } else if (buttonContext.arrowDown) {
+        this.#view.showLay();
+      } else {
+        this.#view.showStay();
+      }
+    }
   }
 }

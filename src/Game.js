@@ -115,31 +115,75 @@ export default class Game {
   }
 
   setKeys() {
-    this.keyboardProcessor.getButton("ArrowUp").executeDown = function () {
+    const keyS = this.keyboardProcessor.getButton("KeyS");
+    keyS.executeDown = function () {
       this.customJump();
     };
-    this.keyboardProcessor.getButton("KeyS").executeDown = function () {
-      this.customJump();
-    };
-    this.keyboardProcessor.getButton("ArrowLeft").executeDown = function () {
+    keyS.executeUp = function () {};
+
+    const keyA = this.keyboardProcessor.getButton("KeyA");
+    keyA.executeDown = function () {};
+    keyA.executeUp = function () {};
+
+    const arrowLeft = this.keyboardProcessor.getButton("ArrowLeft");
+    arrowLeft.executeDown = function () {
       this.#hero.startLeftMove();
+      this.#hero.setView(this.getArrowButtonContext());
     };
-    this.keyboardProcessor.getButton("ArrowLeft").executeUp = function () {
+    arrowLeft.executeUp = function () {
       this.#hero.stopLeftMove();
+      this.#hero.setView(this.getArrowButtonContext());
     };
-    this.keyboardProcessor.getButton("ArrowRight").executeDown = function () {
+
+    const arrowRight = this.keyboardProcessor.getButton("ArrowRight");
+    arrowRight.executeDown = function () {
       this.#hero.startRightMove();
+      this.#hero.setView(this.getArrowButtonContext());
     };
-    this.keyboardProcessor.getButton("ArrowRight").executeUp = function () {
+    arrowRight.executeUp = function () {
       this.#hero.stopRightMove();
+      this.#hero.setView(this.getArrowButtonContext());
+    };
+
+    const arrowUp = this.keyboardProcessor.getButton("ArrowUp");
+    arrowUp.executeDown = function () {
+      // this.customJump();
+      this.#hero.setView(this.getArrowButtonContext());
+    };
+    arrowUp.executeUp = function () {
+      this.#hero.setView(this.getArrowButtonContext());
+    };
+
+    const arrowDown = this.keyboardProcessor.getButton("ArrowDown");
+    arrowDown.executeDown = function () {
+      this.#hero.setView(this.getArrowButtonContext());
+    };
+    arrowDown.executeUp = function () {
+      this.#hero.setView(this.getArrowButtonContext());
     };
   }
 
   customJump() {
-    if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
+    if (
+      this.keyboardProcessor.isButtonPressed("ArrowDown") &&
+      !this.keyboardProcessor.isButtonPressed("ArrowLeft") &&
+      !this.keyboardProcessor.isButtonPressed("ArrowRight")
+    ) {
       this.#hero.throwDown();
     } else {
       this.#hero.jump();
     }
+  }
+
+  getArrowButtonContext() {
+    const buttonContext = {};
+    buttonContext.arrowLeft =
+      this.keyboardProcessor.isButtonPressed("ArrowLeft");
+    buttonContext.arrowRight =
+      this.keyboardProcessor.isButtonPressed("ArrowRight");
+    buttonContext.arrowUp = this.keyboardProcessor.isButtonPressed("ArrowUp");
+    buttonContext.arrowDown =
+      this.keyboardProcessor.isButtonPressed("ArrowDown");
+    return buttonContext;
   }
 }
