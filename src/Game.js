@@ -3,22 +3,28 @@ import Platform from "./Entity/Platforms/Platform.js";
 import PlatformFactory from "./Entity/Platforms/PlatformFactory.js";
 import KeyboardProcessor from "./KeyboardProcessor.js";
 import Box from "./Entity/Platforms/Box.js";
+import Camera from "./Camera.js";
+import { Container } from "pixi.js";
 
 export default class Game {
   #pixiApp;
   #hero;
   #platforms = [];
+  #camera;
+
   keyboardProcessor;
 
   constructor(pixiApp) {
     this.#pixiApp = pixiApp;
+    const worldContainer = new Container();
+    this.#pixiApp.stage.addChild(worldContainer);
 
-    this.#hero = new Hero(this.#pixiApp.stage);
+    this.#hero = new Hero(worldContainer);
     this.#hero.x = 100;
     this.#hero.y = 50;
     // this.#pixiApp.stage.addChild(this.#hero);
 
-    const platformFactory = new PlatformFactory(this.#pixiApp);
+    const platformFactory = new PlatformFactory(worldContainer);
 
     this.#platforms.push(platformFactory.createPlatform(100, 400));
     this.#platforms.push(platformFactory.createPlatform(300, 400));
@@ -37,6 +43,15 @@ export default class Game {
 
     this.keyboardProcessor = new KeyboardProcessor(this);
     this.setKeys();
+
+    const cameraSettings = {
+      target: this.#hero,
+      world: worldContainer,
+      screenSize: this.#pixiApp.screen,
+      maxWorldWidth: worldContainer.width,
+      isBackScrollx: true,
+    };
+    this.#camera = new Camera(cameraSettings);
   }
 
   update() {
@@ -62,6 +77,7 @@ export default class Game {
         this.#hero.stay(this.#platforms[i].y);
       }
     }
+    this.#camera.update();
   }
 
   getOrientCollisionResult(aaRect, bbRect, aaPrevPoint) {

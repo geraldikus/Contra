@@ -3,16 +3,16 @@ import Platform from "./Platform";
 import Box from "./Box";
 
 export default class PlatformFactory {
-  #pixiApp;
-  constructor(pixiApp) {
-    this.#pixiApp = pixiApp;
+  #worldContainer;
+  constructor(worldContainer) {
+    this.#worldContainer = worldContainer;
   }
 
   createPlatform(x, y) {
     const platfom = new Platform();
     platfom.x = x;
     platfom.y = y;
-    this.#pixiApp.stage.addChild(platfom);
+    this.#worldContainer.addChild(platfom);
 
     return platfom;
   }
@@ -21,7 +21,7 @@ export default class PlatformFactory {
     const box = new Box();
     box.x = x;
     box.y = y;
-    this.#pixiApp.stage.addChild(box);
+    this.#worldContainer.addChild(box);
 
     return box;
   }
