@@ -10,7 +10,7 @@ const States = {
 export default class Hero {
   #GRAVITY_FORCE = 0.2; // was 0.2
   #SPEED = 2.5;
-  #JUMP_FORCE = 9; // was 9
+  #JUMP_FORCE = 9.5; // was 9
   #velocityX = 0;
   #velocityY = 0;
 

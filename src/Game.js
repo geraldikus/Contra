@@ -34,12 +34,18 @@ export default class Game {
     this.#platforms.push(platformFactory.createPlatform(300, 400));
     this.#platforms.push(platformFactory.createPlatform(500, 400));
     this.#platforms.push(platformFactory.createPlatform(700, 400));
-    this.#platforms.push(platformFactory.createPlatform(1100, 400));
+    this.#platforms.push(platformFactory.createPlatform(1100, 500));
+
+    this.#platforms.push(platformFactory.createPlatform(1200, 600));
+    this.#platforms.push(platformFactory.createPlatform(1400, 600));
+    this.#platforms.push(platformFactory.createPlatform(1800, 600));
 
     this.#platforms.push(platformFactory.createPlatform(300, 550));
 
     this.#platforms.push(platformFactory.createBox(0, 738));
     this.#platforms.push(platformFactory.createBox(200, 738));
+    this.#platforms.push(platformFactory.createBox(600, 738));
+    this.#platforms.push(platformFactory.createBox(1000, 738));
 
     const box = platformFactory.createBox(400, 708);
     box.isStep = true;
@@ -87,6 +93,7 @@ export default class Game {
 
     for (let i = 0; i < this.#bullets.length; i++) {
       this.#bullets[i].update();
+      this.#checkBulletPosition(this.#bullets[i], i);
     }
   }
 
@@ -215,5 +222,19 @@ export default class Game {
     buttonContext.arrowDown =
       this.keyboardProcessor.isButtonPressed("ArrowDown");
     return buttonContext;
+  }
+
+  #checkBulletPosition(bullet, index) {
+    if (
+      bullet.x > this.#pixiApp.screen.width - this.#worldContainer.x ||
+      bullet.x < -this.#worldContainer.x ||
+      bullet.y > this.#pixiApp.screen.height ||
+      bullet.y < 0
+    ) {
+      if (bullet.parent != null) {
+        bullet.removeFromParent();
+      }
+      this.#bullets.splice(index, 1);
+    }
   }
 }
