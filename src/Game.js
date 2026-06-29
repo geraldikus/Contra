@@ -149,10 +149,7 @@ export default class Game {
 
     const keyA = this.keyboardProcessor.getButton("KeyA");
     keyA.executeDown = function () {
-      const bullet = this.#bulletFactory.createBullet(
-        this.#hero.x,
-        this.#hero.y,
-      );
+      const bullet = this.#bulletFactory.createBullet(this.#hero.bulletContext);
       this.#worldContainer.addChild(bullet);
       this.#bullets.push(bullet);
     };

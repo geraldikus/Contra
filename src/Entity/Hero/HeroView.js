@@ -18,6 +18,18 @@ export default class HeroView extends Container {
     states: {},
   };
 
+  #bulletPointShift = {
+    x: 0,
+    y: 0,
+  };
+
+  #setBulletPointsShift(x, y) {
+    this.#bulletPointShift.x =
+      (x + this.#rootNode.pivot.x * this.#rootNode.scale.x) *
+      this.#rootNode.scale.x;
+    this.#bulletPointShift.y = y;
+  }
+
   #rootNode;
 
   constructor() {
@@ -54,36 +66,45 @@ export default class HeroView extends Container {
     return this.#collisionBox;
   }
 
+  get isFliped() {
+    return this.#rootNode.scale.x == -1;
+  }
+
+  get bulletPointShift() {
+    return this.#bulletPointShift;
+  }
+
   showStay() {
     this.#toState("stay");
+    this.#setBulletPointsShift(65, 30);
   }
-
   showStayUp() {
     this.#toState("stayUp");
+    this.#setBulletPointsShift(-2, -40);
   }
-
   showRun() {
     this.#toState("run");
+    this.#setBulletPointsShift(65, 30);
   }
-
   showRunUp() {
     this.#toState("runUp");
+    this.#setBulletPointsShift(45, -15);
   }
-
   showRunDown() {
     this.#toState("runDown");
+    this.#setBulletPointsShift(40, 60);
   }
-
   showLay() {
     this.#toState("lay");
+    this.#setBulletPointsShift(85, 70);
   }
-
   showJump() {
     this.#toState("jump");
+    this.#setBulletPointsShift(-2, 40);
   }
-
   showFall() {
     this.#toState("fall");
+    this.#setBulletPointsShift(65, 32);
   }
 
   flip(direction) {
