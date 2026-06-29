@@ -5,32 +5,36 @@ import KeyboardProcessor from "./KeyboardProcessor.js";
 import Box from "./Entity/Platforms/Box.js";
 import Camera from "./Camera.js";
 import { Container } from "pixi.js";
+import BulletFactory from "./Entity/Bullets/BulletFactory.js";
 
 export default class Game {
   #pixiApp;
   #hero;
   #platforms = [];
+  #bullets = [];
   #camera;
+  #bulletFactory;
+  #worldContainer;
 
   keyboardProcessor;
 
   constructor(pixiApp) {
     this.#pixiApp = pixiApp;
-    const worldContainer = new Container();
-    this.#pixiApp.stage.addChild(worldContainer);
+    this.#worldContainer = new Container();
+    this.#pixiApp.stage.addChild(this.#worldContainer);
 
-    this.#hero = new Hero(worldContainer);
+    this.#hero = new Hero(this.#worldContainer);
     this.#hero.x = 100;
     this.#hero.y = 50;
     // this.#pixiApp.stage.addChild(this.#hero);
 
-    const platformFactory = new PlatformFactory(worldContainer);
+    const platformFactory = new PlatformFactory(this.#worldContainer);
 
     this.#platforms.push(platformFactory.createPlatform(100, 400));
     this.#platforms.push(platformFactory.createPlatform(300, 400));
     this.#platforms.push(platformFactory.createPlatform(500, 400));
     this.#platforms.push(platformFactory.createPlatform(700, 400));
-    this.#platforms.push(platformFactory.createPlatform(900, 400));
+    this.#platforms.push(platformFactory.createPlatform(1100, 400));
 
     this.#platforms.push(platformFactory.createPlatform(300, 550));
 
@@ -46,12 +50,14 @@ export default class Game {
 
     const cameraSettings = {
       target: this.#hero,
-      world: worldContainer,
+      world: this.#worldContainer,
       screenSize: this.#pixiApp.screen,
-      maxWorldWidth: worldContainer.width,
-      isBackScrollx: true,
+      maxWorldWidth: this.#worldContainer.width,
+      isBackScrollX: false,
     };
     this.#camera = new Camera(cameraSettings);
+
+    this.#bulletFactory = new BulletFactory();
   }
 
   update() {
@@ -78,6 +84,10 @@ export default class Game {
       }
     }
     this.#camera.update();
+
+    for (let i = 0; i < this.#bullets.length; i++) {
+      this.#bullets[i].update();
+    }
   }
 
   getOrientCollisionResult(aaRect, bbRect, aaPrevPoint) {
@@ -138,7 +148,14 @@ export default class Game {
     keyS.executeUp = function () {};
 
     const keyA = this.keyboardProcessor.getButton("KeyA");
-    keyA.executeDown = function () {};
+    keyA.executeDown = function () {
+      const bullet = this.#bulletFactory.createBullet(
+        this.#hero.x,
+        this.#hero.y,
+      );
+      this.#worldContainer.addChild(bullet);
+      this.#bullets.push(bullet);
+    };
     keyA.executeUp = function () {};
 
     const arrowLeft = this.keyboardProcessor.getButton("ArrowLeft");
