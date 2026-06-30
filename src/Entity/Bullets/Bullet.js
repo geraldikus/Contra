@@ -6,7 +6,7 @@ export default class Bullet extends Container {
 
   constructor(angle) {
     super();
-    this.#angle = angle;
+    this.#angle = (angle * Math.PI) / 180;
     const view = new Graphics();
     view
       .setStrokeStyle({ width: 1, color: 0xffff00 })

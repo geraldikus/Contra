@@ -10,10 +10,10 @@ await pixiApp.init({
 const game = new Game(pixiApp);
 
 document.body.appendChild(pixiApp.canvas);
-document.addEventListener("keydown", function (key) {
+document.addEventListener("keydown", (key) => {
   game.keyboardProcessor.onKeyDown(key);
 });
-document.addEventListener("keyup", function (key) {
+document.addEventListener("keyup", (key) => {
   game.keyboardProcessor.onKeyUp(key);
 });
 
