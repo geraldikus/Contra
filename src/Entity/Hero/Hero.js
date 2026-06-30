@@ -1,5 +1,5 @@
 import { Container, Graphics, State } from "pixi.js";
-import HeroView from "./HeroView";
+import HeroView from "./HeroView.js";
 import HeroWeaponUnit from "./HeroWeaponUnit.js";
 
 const States = {

@@ -6,14 +6,17 @@ import Box from "./Entity/Platforms/Box.js";
 import Camera from "./Camera.js";
 import { Container } from "pixi.js";
 import BulletFactory from "./Entity/Bullets/BulletFactory.js";
+import RunnerFactory from "./Entity/Enemies/Runner/RunnerFactory.js";
 
 export default class Game {
   #pixiApp;
   #hero;
   #platforms = [];
   #bullets = [];
+  #enemies = [];
   #camera;
   #bulletFactory;
+  #runnerFactory;
   #worldContainer;
 
   keyboardProcessor;
@@ -31,7 +34,7 @@ export default class Game {
     const platformFactory = new PlatformFactory(this.#worldContainer);
 
     this.#platforms.push(platformFactory.createPlatform(100, 400));
-    this.#platforms.push(platformFactory.createPlatform(300, 400));
+    // this.#platforms.push(platformFactory.createPlatform(300, 400));
     this.#platforms.push(platformFactory.createPlatform(500, 400));
     this.#platforms.push(platformFactory.createPlatform(700, 400));
     this.#platforms.push(platformFactory.createPlatform(1100, 500));
@@ -64,17 +67,33 @@ export default class Game {
     this.#camera = new Camera(cameraSettings);
 
     this.#bulletFactory = new BulletFactory();
+
+    this.#runnerFactory = new RunnerFactory(this.#worldContainer);
+    this.#enemies.push(this.#runnerFactory.create(800, 150));
   }
 
   update() {
     this.#hero.update();
 
+    for (let enemy of this.#enemies) {
+      enemy.update();
+    }
+
     for (let platform of this.#platforms) {
       if (this.#hero.isJumpState() && platform.type != "box") {
         continue;
+        // this.checkPlatformCollision(this.#hero, platform);
       }
 
       this.checkPlatformCollision(this.#hero, platform);
+
+      for (let enemy of this.#enemies) {
+        if (enemy.isJumpState() && platform.type != "box") {
+          continue;
+        }
+
+        this.checkPlatformCollision(enemy, platform);
+      }
     }
     this.#camera.update();
 
@@ -114,8 +133,9 @@ export default class Game {
 
     if (collisionResult.vertical == true) {
       character.y = prevPoint.y;
-      this.#hero.stay(platform.y);
+      character.stay(platform.y);
     }
+
     if (collisionResult.horizontal == true && platform.type == "box") {
       if (platform.isStep) {
         character.stay(platform.y);
