@@ -4,6 +4,8 @@ export default class Bullet extends Container {
   #SPEED = 10;
   #angle;
 
+  isDead;
+
   constructor(angle) {
     super();
     this.#angle = (angle * Math.PI) / 180;

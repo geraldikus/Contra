@@ -123,4 +123,10 @@ export default class Runner {
       this.#view.showRun();
     }
   }
+
+  removeFromParent() {
+    if (this.#view.parent != null) {
+      this.#view.removeFromParent();
+    }
+  }
 }

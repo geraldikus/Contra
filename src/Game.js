@@ -70,13 +70,27 @@ export default class Game {
 
     this.#runnerFactory = new RunnerFactory(this.#worldContainer);
     this.#enemies.push(this.#runnerFactory.create(800, 150));
+    this.#enemies.push(this.#runnerFactory.create(900, 150));
+    this.#enemies.push(this.#runnerFactory.create(950, 150));
+    this.#enemies.push(this.#runnerFactory.create(1000, 150));
+    this.#enemies.push(this.#runnerFactory.create(1020, 150));
   }
 
   update() {
     this.#hero.update();
 
-    for (let enemy of this.#enemies) {
-      enemy.update();
+    for (let i = 0; i < this.#enemies.length; i++) {
+      this.#enemies[i].update();
+      let isDead = false;
+      for (let bullet of this.#bullets) {
+        if (this.isCheckAABB(bullet, this.#enemies[i].collisionBox)) {
+          isDead = true;
+          bullet.isDead = true;
+          break;
+        }
+      }
+
+      this.#checkEnemy(this.#enemies[i], i, isDead);
     }
 
     for (let platform of this.#platforms) {
@@ -236,6 +250,7 @@ export default class Game {
 
   #checkBulletPosition(bullet, index) {
     if (
+      bullet.isDead ||
       bullet.x > this.#pixiApp.screen.width - this.#worldContainer.x ||
       bullet.x < -this.#worldContainer.x ||
       bullet.y > this.#pixiApp.screen.height ||
@@ -245,6 +260,19 @@ export default class Game {
         bullet.removeFromParent();
       }
       this.#bullets.splice(index, 1);
+    }
+  }
+
+  #checkEnemy(enemy, index, isDead) {
+    if (
+      isDead ||
+      enemy.x > this.#pixiApp.screen.width - this.#worldContainer.x ||
+      enemy.x < -this.#worldContainer.x ||
+      enemy.y > this.#pixiApp.screen.height ||
+      enemy.y < 0
+    ) {
+      enemy.removeFromParent();
+      this.#enemies.splice(index, 1);
     }
   }
 }
