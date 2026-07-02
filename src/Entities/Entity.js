@@ -1,6 +1,7 @@
 export default class Entity {
   _view;
   #isDead;
+  #gravitable = false;
 
   constructor(view) {
     this._view = view;
@@ -24,6 +25,14 @@ export default class Entity {
 
   get collisionBox() {
     return this._view.collisionBox;
+  }
+
+  get gravitable() {
+    return this.#gravitable;
+  }
+
+  set gravitable(value) {
+    this.#gravitable = value;
   }
 
   get isDead() {
