@@ -18,3 +18,10 @@ document.addEventListener("keyup", (key) => {
 });
 
 pixiApp.ticker.add(game.update, game);
+
+// pixiApp.ticker.add((ticker) => {
+//   if (ticker.lastTime % 60 < 1) {
+//     console.log("FPS:", ticker.FPS.toFixed(1), "delta:", ticker.deltaTime);
+//   }
+//   game.update();
+// }, game);

@@ -34,6 +34,7 @@ export default class Hero extends Entity {
 
   #isLay = false;
   #isStayUp = false;
+  isFall = false;
   #heroWeaponUnit;
   type = "hero";
 
@@ -65,6 +66,7 @@ export default class Hero extends Entity {
     if (this.#velocityY > 0) {
       if (!(this.#state == States.Jump || this.#state == States.FlyDown)) {
         this._view.showFall();
+        this.isFall = true;
       }
       this.#state = States.FlyDown;
     }
@@ -86,6 +88,7 @@ export default class Hero extends Entity {
       fakeButtonsContext.arrowUp = this.#isStayUp;
       this.#state = States.Stay;
       this.setView(fakeButtonsContext);
+      this.isFall = false;
     }
     this.#state = States.Stay;
     this.#velocityY = 0;
@@ -109,6 +112,7 @@ export default class Hero extends Entity {
   throwDown() {
     this.#state = States.Jump;
     this._view.showFall();
+    this.isFall = true;
   }
 
   startLeftMove() {

@@ -9,6 +9,7 @@ import RunnerFactory from "./Entities/Enemies/Runner/RunnerFactory.js";
 import HeroFactory from "./Entities/Hero/HeroFactory.js";
 import Physics from "./Physics.js";
 import TourelleFactory from "./Entities/Enemies/Runner/Tourelle/TourelleFactory.js";
+import Weapon from "./Weapon.js";
 
 export default class Game {
   #pixiApp;
@@ -19,6 +20,7 @@ export default class Game {
   #bulletFactory;
   #runnerFactory;
   #worldContainer;
+  #weapon;
 
   keyboardProcessor;
 
@@ -72,6 +74,9 @@ export default class Game {
       this.#worldContainer,
       this.#entities,
     );
+
+    this.#weapon = new Weapon(this.#bulletFactory);
+    this.#weapon.setWeapon(2);
 
     this.#runnerFactory = new RunnerFactory(this.#worldContainer);
     this.#entities.push(this.#runnerFactory.create(800, 150));
@@ -131,6 +136,10 @@ export default class Game {
       }
       this.checkPlatformCollision(character, platform);
     }
+
+    if (character.type == "hero" && character.x < -this.#worldContainer.x) {
+      character.x = character.prevPoint.x;
+    }
   }
 
   checkPlatformCollision(character, platform) {
@@ -165,7 +174,9 @@ export default class Game {
 
     const keyA = this.keyboardProcessor.getButton("KeyA");
     keyA.executeDown = function () {
-      this.#bulletFactory.createBullet(this.#hero.bulletContext);
+      if (!this.#hero.isDead && !this.#hero.isFall) {
+        this.#weapon.fire(this.#hero.bulletContext);
+      }
     };
     keyA.executeUp = function () {};
 
