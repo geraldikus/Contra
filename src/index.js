@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js";
 const pixiApp = new PIXI.Application();
 await pixiApp.init({
   width: 1024,
-  height: 868,
+  height: 768,
 });
 
 const game = new Game(pixiApp);

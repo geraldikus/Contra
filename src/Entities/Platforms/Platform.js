@@ -1,14 +1,7 @@
-import { Container, Graphics } from "pixi.js";
+import Entity from "../Entity.js";
 
-export default class Platform extends Container {
-  constructor() {
-    super();
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0x00ff00 })
-      .rect(0, 0, 200, 30)
-      .stroke();
-
-    this.addChild(view);
+export default class Platform extends Entity {
+  constructor(view) {
+    super(view);
   }
 }

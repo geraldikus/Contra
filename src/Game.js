@@ -1,7 +1,6 @@
 import Platform from "./Entities/Platforms/Platform.js";
 import PlatformFactory from "./Entities/Platforms/PlatformFactory.js";
 import KeyboardProcessor from "./KeyboardProcessor.js";
-import Box from "./Entities/Platforms/Box.js";
 import Camera from "./Camera.js";
 import { Container } from "pixi.js";
 import BulletFactory from "./Entities/Bullets/BulletFactory.js";
@@ -10,6 +9,8 @@ import HeroFactory from "./Entities/Hero/HeroFactory.js";
 import Physics from "./Physics.js";
 import TourelleFactory from "./Entities/Enemies/Runner/Tourelle/TourelleFactory.js";
 import Weapon from "./Weapon.js";
+import World from "./World.js";
+import SceneFactory from "./SceneFactory.js";
 
 export default class Game {
   #pixiApp;
@@ -26,37 +27,19 @@ export default class Game {
 
   constructor(pixiApp) {
     this.#pixiApp = pixiApp;
-    this.#worldContainer = new Container();
+    this.#worldContainer = new World();
     this.#pixiApp.stage.addChild(this.#worldContainer);
 
-    const heroFactory = new HeroFactory(this.#worldContainer);
+    const heroFactory = new HeroFactory(this.#worldContainer.game);
 
-    this.#hero = heroFactory.create(100, 100);
+    this.#hero = heroFactory.create(160, 100);
 
     this.#entities.push(this.#hero);
 
     const platformFactory = new PlatformFactory(this.#worldContainer);
 
-    this.#platforms.push(platformFactory.createPlatform(100, 400));
-    // this.#platforms.push(platformFactory.createPlatform(300, 400));
-    this.#platforms.push(platformFactory.createPlatform(500, 400));
-    this.#platforms.push(platformFactory.createPlatform(700, 400));
-    this.#platforms.push(platformFactory.createPlatform(1100, 500));
-
-    this.#platforms.push(platformFactory.createPlatform(1200, 600));
-    this.#platforms.push(platformFactory.createPlatform(1400, 600));
-    this.#platforms.push(platformFactory.createPlatform(1800, 600));
-
-    this.#platforms.push(platformFactory.createPlatform(300, 550));
-
-    this.#platforms.push(platformFactory.createBox(0, 738));
-    this.#platforms.push(platformFactory.createBox(200, 738));
-    this.#platforms.push(platformFactory.createBox(600, 738));
-    this.#platforms.push(platformFactory.createBox(1000, 738));
-
-    const box = platformFactory.createBox(400, 708);
-    box.isStep = true;
-    this.#platforms.push(box);
+    const sceneFactory = new SceneFactory(this.#platforms, platformFactory);
+    sceneFactory.createScene();
 
     this.keyboardProcessor = new KeyboardProcessor(this);
     this.setKeys();
@@ -71,23 +54,23 @@ export default class Game {
     this.#camera = new Camera(cameraSettings);
 
     this.#bulletFactory = new BulletFactory(
-      this.#worldContainer,
+      this.#worldContainer.game,
       this.#entities,
     );
 
     this.#weapon = new Weapon(this.#bulletFactory);
     this.#weapon.setWeapon(2);
 
-    this.#runnerFactory = new RunnerFactory(this.#worldContainer);
-    this.#entities.push(this.#runnerFactory.create(800, 150));
-    this.#entities.push(this.#runnerFactory.create(900, 150));
+    this.#runnerFactory = new RunnerFactory(this.#worldContainer.game);
+    // this.#entities.push(this.#runnerFactory.create(800, 150));
+    // this.#entities.push(this.#runnerFactory.create(900, 150));
 
     const tourelleFactory = new TourelleFactory(
-      this.#worldContainer,
+      this.#worldContainer.game,
       this.#hero,
       this.#bulletFactory,
     );
-    this.#entities.push(tourelleFactory.create(500, 200));
+    // this.#entities.push(tourelleFactory.create(500, 200));
   }
 
   update() {
@@ -147,7 +130,7 @@ export default class Game {
 
     const collisionResult = Physics.getOrientCollisionResult(
       character.collisionBox,
-      platform,
+      platform.collisionBox,
       prevPoint,
     );
 
