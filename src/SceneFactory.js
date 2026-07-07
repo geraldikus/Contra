@@ -1,11 +1,13 @@
 export default class SceneFactory {
   #platforms;
   #platformFactory;
+  #enemyFactory;
   #blockSize = 128;
 
-  constructor(platforms, platformFactory) {
+  constructor(platforms, platformFactory, enemyFactory) {
     this.#platforms = platforms;
     this.#platformFactory = platformFactory;
+    this.#enemyFactory = enemyFactory;
   }
 
   createScene() {
@@ -13,6 +15,8 @@ export default class SceneFactory {
     this.#createGround();
     this.#createWater();
     this.#createBossWall();
+    this.#createBridges();
+    this.#createEnemies();
   }
 
   #createPlatforms() {
@@ -65,11 +69,46 @@ export default class SceneFactory {
     this.#create(xIndexes, 170, this.#platformFactory.createBossWall);
   }
 
+  #createBridges() {
+    let xIndexes = [16, 17, 18, 19];
+    this.#create(xIndexes, 384, this.#platformFactory.createBridge);
+  }
+
   #create(xIndexes, y, createFunc) {
     for (let i of xIndexes) {
       this.#platforms.push(
         createFunc.call(this.#platformFactory, this.#blockSize * i, y),
       );
     }
+  }
+
+  #createEnemies() {
+    this.#enemyFactory.createRunner(this.#blockSize * 9, 290);
+    this.#enemyFactory.createRunner(this.#blockSize * 10, 290);
+    this.#enemyFactory.createRunner(this.#blockSize * 11, 290);
+
+    this.#enemyFactory.createRunner(this.#blockSize * 13, 290);
+    this.#enemyFactory.createRunner(this.#blockSize * 13 + 50, 290);
+    this.#enemyFactory.createRunner(this.#blockSize * 13 + 100, 290);
+
+    this.#enemyFactory.createRunner(this.#blockSize * 16, 290);
+
+    this.#enemyFactory.createRunner(this.#blockSize * 20, 290);
+    this.#enemyFactory.createRunner(this.#blockSize * 21, 290);
+
+    this.#enemyFactory.createRunner(this.#blockSize * 29, 290);
+    this.#enemyFactory.createRunner(this.#blockSize * 30, 290);
+
+    let runner = this.#enemyFactory.createRunner(this.#blockSize * 40, 400);
+    runner.jumpBehaviorKoef = 1;
+    runner = this.#enemyFactory.createRunner(this.#blockSize * 42, 400);
+    runner.jumpBehaviorKoef = 1;
+
+    this.#enemyFactory.createTourelle(this.#blockSize * 10, 670);
+    this.#enemyFactory.createTourelle(this.#blockSize * 22 + 50, 500);
+    this.#enemyFactory.createTourelle(this.#blockSize * 29 + 64, 550);
+    this.#enemyFactory.createTourelle(this.#blockSize * 35 + 64, 550);
+    this.#enemyFactory.createTourelle(this.#blockSize * 45 + 64, 670);
+    this.#enemyFactory.createTourelle(this.#blockSize * 48 + 64, 670);
   }
 }

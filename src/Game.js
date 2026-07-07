@@ -4,13 +4,12 @@ import KeyboardProcessor from "./KeyboardProcessor.js";
 import Camera from "./Camera.js";
 import { Container } from "pixi.js";
 import BulletFactory from "./Entities/Bullets/BulletFactory.js";
-import RunnerFactory from "./Entities/Enemies/Runner/RunnerFactory.js";
 import HeroFactory from "./Entities/Hero/HeroFactory.js";
 import Physics from "./Physics.js";
-import TourelleFactory from "./Entities/Enemies/Runner/Tourelle/TourelleFactory.js";
 import Weapon from "./Weapon.js";
 import World from "./World.js";
 import SceneFactory from "./SceneFactory.js";
+import EnemiesFactory from "./Entities/Enemies/Runner/EnemiesFactory.js";
 
 export default class Game {
   #pixiApp;
@@ -36,9 +35,25 @@ export default class Game {
 
     this.#entities.push(this.#hero);
 
+    this.#bulletFactory = new BulletFactory(
+      this.#worldContainer.game,
+      this.#entities,
+    );
+
+    const enemyFactory = new EnemiesFactory(
+      this.#worldContainer.game,
+      this.#hero,
+      this.#bulletFactory,
+      this.#entities,
+    );
+
     const platformFactory = new PlatformFactory(this.#worldContainer);
 
-    const sceneFactory = new SceneFactory(this.#platforms, platformFactory);
+    const sceneFactory = new SceneFactory(
+      this.#platforms,
+      platformFactory,
+      enemyFactory,
+    );
     sceneFactory.createScene();
 
     this.keyboardProcessor = new KeyboardProcessor(this);
@@ -53,24 +68,8 @@ export default class Game {
     };
     this.#camera = new Camera(cameraSettings);
 
-    this.#bulletFactory = new BulletFactory(
-      this.#worldContainer.game,
-      this.#entities,
-    );
-
     this.#weapon = new Weapon(this.#bulletFactory);
     this.#weapon.setWeapon(2);
-
-    this.#runnerFactory = new RunnerFactory(this.#worldContainer.game);
-    // this.#entities.push(this.#runnerFactory.create(800, 150));
-    // this.#entities.push(this.#runnerFactory.create(900, 150));
-
-    const tourelleFactory = new TourelleFactory(
-      this.#worldContainer.game,
-      this.#hero,
-      this.#bulletFactory,
-    );
-    // this.#entities.push(tourelleFactory.create(500, 200));
   }
 
   update() {
@@ -233,11 +232,22 @@ export default class Game {
   }
 
   #isScreenOut(entity) {
-    return (
-      entity.x > this.#pixiApp.screen.width - this.#worldContainer.x ||
-      entity.x < -this.#worldContainer.x ||
-      entity.y > this.#pixiApp.screen.height ||
-      entity.y < 0
-    );
+    if (
+      entity.type == "heroBullet" ||
+      entity.type == "enemyBullet" ||
+      entity.type == "hero"
+    ) {
+      return (
+        entity.x > this.#pixiApp.screen.width - this.#worldContainer.x ||
+        entity.x < -this.#worldContainer.x ||
+        entity.y > this.#pixiApp.screen.height ||
+        entity.y < 0
+      );
+    } else if (entity.type == "enemy") {
+      return (
+        entity.x < -this.#worldContainer.x ||
+        entity.y > this.#pixiApp.screen.height
+      );
+    }
   }
 }

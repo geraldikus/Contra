@@ -26,10 +26,14 @@ export default class Runner extends Entity {
   };
 
   #state = States.Stay;
+  #target;
   type = "enemy";
+  jumpBehaviorKoef = 0.4;
 
-  constructor(view) {
+  constructor(view, target) {
     super(view);
+
+    this.#target = target;
 
     this.#state = States.Jump;
     this._view.showJump();
@@ -37,6 +41,7 @@ export default class Runner extends Entity {
     this.#movement.x = -1;
 
     this.gravitable = true;
+    this.isActive = false;
   }
 
   get collisionBox() {
@@ -64,6 +69,13 @@ export default class Runner extends Entity {
   }
 
   update() {
+    if (!this.isActive) {
+      if (this.x - this.#target.x < 512 + this.collisionBox.width * 2) {
+        this.isActive = true;
+      }
+      return;
+    }
+
     this.#prevPoint.x = this.x;
     this.#prevPoint.y = this.y;
 
@@ -72,7 +84,7 @@ export default class Runner extends Entity {
 
     if (this.#velocityY > 0) {
       if (!(this.#state == States.Jump || this.#state == States.FlyDown)) {
-        if (Math.random() > 0.4) {
+        if (Math.random() > this.jumpBehaviorKoef) {
           this._view.showFall();
         } else {
           this.jump();

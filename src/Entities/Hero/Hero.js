@@ -46,6 +46,7 @@ export default class Hero extends Entity {
     this.#state = States.Jump;
     this._view.showJump();
     this.gravitable = true;
+    this.isActive = true;
   }
 
   get bulletContext() {

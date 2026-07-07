@@ -1,6 +1,7 @@
 export default class Entity {
   _view;
   #isDead;
+  #isActive;
   #gravitable = false;
 
   constructor(view) {
@@ -33,6 +34,14 @@ export default class Entity {
 
   set gravitable(value) {
     this.#gravitable = value;
+  }
+
+  get isActive() {
+    return this.#isActive;
+  }
+
+  set isActive(value) {
+    this.#isActive = value;
   }
 
   get isDead() {
