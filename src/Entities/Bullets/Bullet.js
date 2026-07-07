@@ -2,7 +2,7 @@ import { Container, Graphics } from "pixi.js";
 import Entity from "../Entity";
 
 export default class Bullet extends Entity {
-  #SPEED = 10;
+  #SPEED = 7; // was 10
   #angle;
 
   type;

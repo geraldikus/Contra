@@ -56,6 +56,10 @@ export default class RunnerView extends Container {
     return this.#collisionBox;
   }
 
+  get hitBox() {
+    return this.collisionBox;
+  }
+
   get isFliped() {
     return this.#rootNode.scale.x == -1;
   }

@@ -28,4 +28,8 @@ export default class BulletView extends Container {
 
     return this.#collisionBox;
   }
+
+  get hitBox() {
+    return this.collisionBox;
+  }
 }

@@ -69,7 +69,7 @@ export default class Game {
     this.#camera = new Camera(cameraSettings);
 
     this.#weapon = new Weapon(this.#bulletFactory);
-    this.#weapon.setWeapon(2);
+    this.#weapon.setWeapon(1);
   }
 
   update() {
@@ -97,7 +97,7 @@ export default class Game {
     );
 
     for (let damager of damagers) {
-      if (Physics.isCheckAABB(damager.collisionBox, entity.collisionBox)) {
+      if (Physics.isCheckAABB(damager.hitBox, entity.hitBox)) {
         entity.damage();
         if (damager.type != "enemy") {
           damager.dead();
@@ -232,18 +232,14 @@ export default class Game {
   }
 
   #isScreenOut(entity) {
-    if (
-      entity.type == "heroBullet" ||
-      entity.type == "enemyBullet" ||
-      entity.type == "hero"
-    ) {
+    if (entity.type == "heroBullet" || entity.type == "enemyBullet") {
       return (
         entity.x > this.#pixiApp.screen.width - this.#worldContainer.x ||
         entity.x < -this.#worldContainer.x ||
         entity.y > this.#pixiApp.screen.height ||
         entity.y < 0
       );
-    } else if (entity.type == "enemy") {
+    } else if (entity.type == "enemy" || entity.type == "hero") {
       return (
         entity.x < -this.#worldContainer.x ||
         entity.y > this.#pixiApp.screen.height

@@ -28,6 +28,10 @@ export default class Entity {
     return this._view.collisionBox;
   }
 
+  get hitBox() {
+    return this._view.hitBox;
+  }
+
   get gravitable() {
     return this.#gravitable;
   }
