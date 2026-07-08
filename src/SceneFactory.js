@@ -2,12 +2,16 @@ export default class SceneFactory {
   #platforms;
   #platformFactory;
   #enemyFactory;
+  #entities;
+  #target;
   #blockSize = 128;
 
-  constructor(platforms, platformFactory, enemyFactory) {
+  constructor(platforms, entities, platformFactory, enemyFactory, target) {
     this.#platforms = platforms;
+    this.#entities = entities;
     this.#platformFactory = platformFactory;
     this.#enemyFactory = enemyFactory;
+    this.#target = target;
   }
 
   createScene() {
@@ -15,8 +19,8 @@ export default class SceneFactory {
     this.#createGround();
     this.#createWater();
     this.#createBossWall();
-    this.#createBridges();
     this.#createEnemies();
+    this.#createInteractive();
   }
 
   #createPlatforms() {
@@ -69,9 +73,18 @@ export default class SceneFactory {
     this.#create(xIndexes, 170, this.#platformFactory.createBossWall);
   }
 
-  #createBridges() {
+  #createInteractive() {
     let xIndexes = [16, 17, 18, 19];
-    this.#create(xIndexes, 384, this.#platformFactory.createBridge);
+    this.#createBridges(xIndexes);
+  }
+
+  #createBridges(xIndexes) {
+    for (let i of xIndexes) {
+      let bridge = this.#platformFactory.createBridge(this.#blockSize * i, 384);
+      bridge.setTarget(this.#target);
+      this.#platforms.push(bridge);
+      this.#entities.push(bridge);
+    }
   }
 
   #create(xIndexes, y, createFunc) {

@@ -51,8 +51,10 @@ export default class Game {
 
     const sceneFactory = new SceneFactory(
       this.#platforms,
+      this.#entities,
       platformFactory,
       enemyFactory,
+      this.#hero,
     );
     sceneFactory.createScene();
 
@@ -113,7 +115,10 @@ export default class Game {
       return;
     }
     for (let platform of this.#platforms) {
-      if (character.isJumpState() && platform.type != "box") {
+      if (
+        (character.isJumpState() && platform.type != "box") ||
+        !platform.isActive
+      ) {
         continue;
       }
       this.checkPlatformCollision(character, platform);
