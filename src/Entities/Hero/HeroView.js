@@ -1,4 +1,10 @@
-import { Container, Graphics } from "pixi.js";
+import {
+  AnimatedSprite,
+  Container,
+  Graphics,
+  Sprite,
+  Spritesheet,
+} from "pixi.js";
 
 export default class HeroView extends Container {
   #bounds = {
@@ -40,10 +46,12 @@ export default class HeroView extends Container {
   }
 
   #rootNode;
+  #assets;
 
-  constructor() {
+  constructor(assets) {
     super();
 
+    this.#assets = assets;
     this.#createNodeStructure();
     this.#rootNode.pivot.x = 10;
     this.#rootNode.x = 10;
@@ -188,95 +196,70 @@ export default class HeroView extends Container {
   }
 
   #getStayImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(0, 0, 20, 90)
-      .rect(0, 30, 70, 5)
-      .stroke();
+    // const view = new Graphics();
+    // view
+    //   .setStrokeStyle({ width: 1, color: 0xffff00 })
+    //   .rect(0, 0, 20, 90)
+    //   .rect(0, 30, 70, 5)
+    //   .stroke();
+
+    const view = new Sprite(this.#assets.getTexture("stay0000"));
+
     return view;
   }
 
   #getStayUpImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(0, 0, 20, 90)
-      .rect(8, -40, 5, 40)
-      .stroke();
+    const view = new Sprite(this.#assets.getTexture("stayup0000"));
+    view.y -= 31;
+    view.x += 2;
     return view;
   }
 
   #getRunImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(1, 1, 20, 90)
-      .rect(0, 30, 70, 5);
-    view.skew.x = -0.1;
-    view.stroke();
+    const view = new AnimatedSprite(this.#assets.getAnimationTextures("run"));
+    view.animationSpeed = 1 / 12;
+    view.play();
+    view.y -= 3;
+
     return view;
   }
 
   #getRunUpImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(1, 1, 20, 90)
-      .lineTo(0, 30)
-      .lineTo(30, -20)
-      .lineTo(45, -15)
-      .lineTo(0, 40);
-    view.skew.x = -0.1;
-    view.stroke();
+    const view = new AnimatedSprite(this.#assets.getAnimationTextures("runup"));
+    view.animationSpeed = 1 / 12;
+    view.play();
+    view.y -= 3;
     return view;
   }
 
   #getRunDownImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(1, 1, 20, 90)
-      .lineTo(0, 20)
-      .lineTo(40, 60)
-      .lineTo(35, 65)
-      .lineTo(0, 30);
-    view.skew.x = -0.1;
-    view.stroke();
+    const view = new AnimatedSprite(
+      this.#assets.getAnimationTextures("rundown"),
+    );
+    view.animationSpeed = 1 / 12;
+    view.play();
+    view.y -= 3;
     return view;
   }
 
   #getLayImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(0, 0, 90, 20)
-      .rect(90, 0, 40, 5)
-      .stroke();
-    view.x -= 45;
-    view.y += 70;
+    const view = new Sprite(this.#assets.getTexture("lay0000"));
+    view.y += 50;
+    view.x += 25;
     return view;
   }
 
   #getJumpImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(0, 0, 40, 40)
-      .stroke();
+    const view = new AnimatedSprite(this.#assets.getAnimationTextures("jump"));
+    view.animationSpeed = 1 / 10;
+    view.play();
+    view.y -= 3;
     view.x -= 10;
-    view.y += 25;
     return view;
   }
 
   #getFallImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(1, 1, 20, 90)
-      .rect(10, 20, 5, 60);
-    view.skew.x = -0.1;
-    view.stroke();
+    const view = new Sprite(this.#assets.getTexture("run0003"));
     return view;
   }
 }

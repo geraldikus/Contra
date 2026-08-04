@@ -24,12 +24,12 @@ export default class Game {
 
   keyboardProcessor;
 
-  constructor(pixiApp) {
+  constructor(pixiApp, assets) {
     this.#pixiApp = pixiApp;
     this.#worldContainer = new World();
     this.#pixiApp.stage.addChild(this.#worldContainer);
 
-    const heroFactory = new HeroFactory(this.#worldContainer.game);
+    const heroFactory = new HeroFactory(this.#worldContainer.game, assets);
 
     this.#hero = heroFactory.create(160, 100);
 
