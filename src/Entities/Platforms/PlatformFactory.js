@@ -1,4 +1,4 @@
-import { Graphics, PlaneGeometry } from "pixi.js";
+import { Graphics, PlaneGeometry, Sprite } from "pixi.js";
 import Platform from "./Platform";
 import PlatformView from "./PlatformView.js";
 import BridgePlatform from "./BridgePlatform.js";
@@ -8,25 +8,14 @@ export default class PlatformFactory {
   #platformHeight = 24;
 
   #worldContainer;
-  constructor(worldContainer) {
+  #assets;
+  constructor(worldContainer, assets) {
     this.#worldContainer = worldContainer;
+    this.#assets = assets;
   }
 
   createPlatform(x, y) {
-    const skin = new Graphics();
-    skin
-      .setStrokeStyle({ width: 1, color: 0x004220 })
-      .rect(0, 0, this.#platformWidth, this.#platformHeight)
-      .fill({ color: 0x00ff00 })
-      .rect(
-        0,
-        this.#platformHeight,
-        this.#platformWidth,
-        this.#platformHeight * 20,
-      )
-      .fill({ color: 0x694216 })
-      .stroke();
-
+    const skin = this.#getGroundPlatform();
     const view = new PlatformView(this.#platformWidth, this.#platformHeight);
     view.addChild(skin);
 
@@ -39,21 +28,7 @@ export default class PlatformFactory {
   }
 
   createBox(x, y) {
-    const skin = new Graphics();
-    skin
-      .setStrokeStyle({ width: 1, color: 0x004220 })
-      .rect(0, 0, this.#platformWidth, this.#platformHeight)
-      .fill(0x00ff00)
-      .lineTo(this.#platformWidth, this.#platformHeight)
-      .rect(
-        0,
-        this.#platformHeight,
-        this.#platformWidth,
-        this.#platformHeight * 20,
-      )
-      .fill({ color: 0x694216 })
-      .stroke();
-
+    const skin = this.#getGroundPlatform();
     const view = new PlatformView(this.#platformWidth, this.#platformHeight);
     view.addChild(skin);
 
@@ -132,5 +107,23 @@ export default class PlatformFactory {
     this.#worldContainer.background.addChild(view);
 
     return platfom;
+  }
+
+  #getGroundPlatform() {
+    const grass = new Sprite(this.#assets.getTexture("platform0000"));
+    const ground = new Sprite(this.#assets.getTexture("ground0000"));
+    ground.y = grass.height - 1;
+
+    const ground2 = new Sprite(this.#assets.getTexture("ground0000"));
+    ground2.y = grass.height * 2 - 2;
+
+    const ground3 = new Sprite(this.#assets.getTexture("ground0000"));
+    ground3.y = grass.height * 3 - 4;
+
+    grass.addChild(ground);
+    grass.addChild(ground2);
+    grass.addChild(ground3);
+
+    return grass;
   }
 }
