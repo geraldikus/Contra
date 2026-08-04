@@ -163,9 +163,15 @@ export default class Game {
     keyA.executeDown = function () {
       if (!this.#hero.isDead && !this.#hero.isFall) {
         this.#weapon.fire(this.#hero.bulletContext);
+        this.#hero.setView(this.getArrowButtonContext());
       }
     };
-    keyA.executeUp = function () {};
+
+    keyA.executeUp = function () {
+      if (!this.#hero.isDead && !this.#hero.isFall) {
+        this.#hero.setView(this.getArrowButtonContext());
+      }
+    };
 
     const arrowLeft = this.keyboardProcessor.getButton("ArrowLeft");
     arrowLeft.executeDown = function () {
@@ -226,6 +232,7 @@ export default class Game {
     buttonContext.arrowUp = this.keyboardProcessor.isButtonPressed("ArrowUp");
     buttonContext.arrowDown =
       this.keyboardProcessor.isButtonPressed("ArrowDown");
+    buttonContext.shoot = this.keyboardProcessor.isButtonPressed("KeyA");
     return buttonContext;
   }
 

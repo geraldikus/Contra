@@ -63,6 +63,7 @@ export default class HeroView extends Container {
     this.#stm.states.stay = this.#getStayImage();
     this.#stm.states.stayUp = this.#getStayUpImage();
     this.#stm.states.run = this.#getRunImage();
+    this.#stm.states.runShoot = this.#getRunShootImage();
     this.#stm.states.runUp = this.#getRunUpImage();
     this.#stm.states.runDown = this.#getRunDownImage();
     this.#stm.states.lay = this.#getLayImage();
@@ -124,6 +125,17 @@ export default class HeroView extends Container {
     this.#hitBox.shiftX = 0;
     this.#hitBox.shiftY = 0;
   }
+
+  showRunShoot() {
+    this.#toState("runShoot");
+    this.#setBulletPointsShift(50, 29);
+
+    this.#hitBox.width = 20;
+    this.#hitBox.height = 90;
+    this.#hitBox.shiftX = 0;
+    this.#hitBox.shiftY = 0;
+  }
+
   showRunUp() {
     this.#toState("runUp");
     this.#setBulletPointsShift(45, -15);
@@ -222,6 +234,40 @@ export default class HeroView extends Container {
     view.y -= 3;
 
     return view;
+  }
+
+  #getRunShootImage() {
+    const container = new Container();
+
+    const upperPart = new Sprite(this.#assets.getTexture("stay0000"));
+    upperPart.x = 8;
+    upperPart.y = 2;
+
+    const upperPartMask = new Graphics();
+    upperPartMask.beginFill(0xffffff);
+    upperPartMask.rect(0, 0, 100, 45).fill(0xffffff);
+
+    upperPart.mask = upperPartMask;
+
+    const bottomPart = new AnimatedSprite(
+      this.#assets.getAnimationTextures("run"),
+    );
+    bottomPart.animationSpeed = 1 / 12;
+    bottomPart.play();
+    bottomPart.y -= 3;
+
+    const bottomPartMask = new Graphics();
+    bottomPartMask.beginFill(0xffffff);
+    bottomPartMask.rect(0, 45, 100, 45).fill(0xffffff);
+
+    bottomPart.mask = bottomPartMask;
+
+    container.addChild(upperPart);
+    container.addChild(bottomPart);
+    container.addChild(upperPartMask);
+    container.addChild(bottomPartMask);
+
+    return container;
   }
 
   #getRunUpImage() {
