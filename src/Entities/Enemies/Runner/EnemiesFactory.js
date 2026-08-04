@@ -8,16 +8,18 @@ export default class EnemiesFactory {
   #target;
   #boulleteFactory;
   #entities;
+  #assets;
 
-  constructor(worldContainer, target, boulleteFactory, entities) {
+  constructor(worldContainer, target, boulleteFactory, entities, assets) {
     this.#worldContainer = worldContainer;
     this.#target = target;
     this.#boulleteFactory = boulleteFactory;
     this.#entities = entities;
+    this.#assets = assets;
   }
 
   createRunner(x, y) {
-    const view = new RunnerView();
+    const view = new RunnerView(this.#assets);
     this.#worldContainer.addChild(view);
     const runner = new Runner(view, this.#target);
     runner.x = x;
@@ -29,7 +31,7 @@ export default class EnemiesFactory {
   }
 
   createTourelle(x, y) {
-    const view = new TourelleView();
+    const view = new TourelleView(this.#assets);
     this.#worldContainer.addChild(view);
 
     const tourelle = new Tourelle(view, this.#target, this.#boulleteFactory);

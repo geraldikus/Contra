@@ -208,15 +208,7 @@ export default class HeroView extends Container {
   }
 
   #getStayImage() {
-    // const view = new Graphics();
-    // view
-    //   .setStrokeStyle({ width: 1, color: 0xffff00 })
-    //   .rect(0, 0, 20, 90)
-    //   .rect(0, 30, 70, 5)
-    //   .stroke();
-
     const view = new Sprite(this.#assets.getTexture("stay0000"));
-
     return view;
   }
 

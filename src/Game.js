@@ -45,6 +45,7 @@ export default class Game {
       this.#hero,
       this.#bulletFactory,
       this.#entities,
+      assets,
     );
 
     const platformFactory = new PlatformFactory(this.#worldContainer);

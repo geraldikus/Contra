@@ -1,4 +1,4 @@
-import { Container, Graphics } from "pixi.js";
+import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js";
 
 export default class RunnerView extends Container {
   #bounds = {
@@ -18,18 +18,13 @@ export default class RunnerView extends Container {
     states: {},
   };
 
-  //   #setBulletPointsShift(x, y) {
-  //     this.#bulletPointShift.x =
-  //       (x + this.#rootNode.pivot.x * this.#rootNode.scale.x) *
-  //       this.#rootNode.scale.x;
-  //     this.#bulletPointShift.y = y;
-  //   }
-
   #rootNode;
+  #assets;
 
-  constructor() {
+  constructor(assets) {
     super();
 
+    this.#assets = assets;
     this.#createNodeStructure();
     this.#rootNode.pivot.x = 10;
     this.#rootNode.x = 10;
@@ -99,32 +94,22 @@ export default class RunnerView extends Container {
   }
 
   #getRunImage() {
-    const view = new Graphics();
-    view.setStrokeStyle({ width: 1, color: 0xff0000 }).rect(1, 1, 20, 90);
-    view.skew.x = -0.1;
-    view.stroke();
+    const view = new AnimatedSprite(
+      this.#assets.getAnimationTextures("runnerrun"),
+    );
+    view.animationSpeed = 1 / 12;
+    view.play();
+    view.y += 2;
     return view;
   }
 
   #getJumpImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xff0000 })
-      .rect(0, 0, 40, 40)
-      .stroke();
-    view.x -= 10;
-    view.y += 25;
+    const view = new Sprite(this.#assets.getTexture("runnerjump0000"));
     return view;
   }
 
   #getFallImage() {
-    const view = new Graphics();
-    view
-      .setStrokeStyle({ width: 1, color: 0xff0000 })
-      .rect(1, 1, 20, 90)
-      .rect(10, 20, 5, 60);
-    view.skew.x = -0.1;
-    view.stroke();
+    const view = new Sprite(this.#assets.getTexture("runnerjump0000"));
     return view;
   }
 }
