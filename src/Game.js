@@ -10,6 +10,7 @@ import Weapon from "./Weapon.js";
 import World from "./World.js";
 import SceneFactory from "./SceneFactory.js";
 import EnemiesFactory from "./Entities/Enemies/Runner/EnemiesFactory.js";
+import PowerupsFactory from "./Entities/Powerups/PowerupsFactory.js";
 
 export default class Game {
   #pixiApp;
@@ -50,12 +51,20 @@ export default class Game {
 
     const platformFactory = new PlatformFactory(this.#worldContainer, assets);
 
+    const powerupFactory = new PowerupsFactory(
+      this.#entities,
+      this.#worldContainer.game,
+      assets,
+      this.#hero,
+    );
+
     const sceneFactory = new SceneFactory(
       this.#platforms,
       this.#entities,
       platformFactory,
       enemyFactory,
       this.#hero,
+      powerupFactory,
     );
     sceneFactory.createScene();
 
@@ -80,7 +89,12 @@ export default class Game {
       const entity = this.#entities[i];
       entity.update();
 
-      if (entity.type == "hero" || entity.type == "enemy") {
+      if (
+        entity.type == "hero" ||
+        entity.type == "enemy" ||
+        entity.type == "powerupBox" ||
+        entity.type == "spreadgunPowerup"
+      ) {
         this.#checkDamage(entity);
         this.#checkPlatforms(entity);
       }
@@ -95,7 +109,8 @@ export default class Game {
   #checkDamage(entity) {
     const damagers = this.#entities.filter(
       (damager) =>
-        (entity.type == "enemy" && damager.type == "heroBullet") ||
+        ((entity.type == "enemy" || entity.type == "powerupBox") &&
+          damager.type == "heroBullet") ||
         (entity.type == "hero" &&
           (damager.type == "enemyBullet" || damager.type == "enemy")),
     );
@@ -107,6 +122,18 @@ export default class Game {
           damager.dead();
         }
 
+        break;
+      }
+    }
+
+    const powerups = this.#entities.filter(
+      (powerup) => powerup.type == "spreadgunPowerup" && entity.type == "hero",
+    );
+
+    for (let powerup of powerups) {
+      if (Physics.isCheckAABB(powerup.hitBox, entity.hitBox)) {
+        powerup.damage();
+        this.#weapon.setWeapon(powerup.powerupType);
         break;
       }
     }
