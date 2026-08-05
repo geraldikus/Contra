@@ -72,7 +72,7 @@ export default class Game {
     this.#camera = new Camera(cameraSettings);
 
     this.#weapon = new Weapon(this.#bulletFactory);
-    this.#weapon.setWeapon(1);
+    this.#weapon.setWeapon(2);
   }
 
   update() {

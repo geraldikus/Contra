@@ -49,13 +49,14 @@ export default class PlatformFactory {
   }
 
   createWater(x, y) {
-    const skin = new Graphics();
-    skin
-      .setStrokeStyle({ width: 1, color: 0x0000ff })
-      .rect(0, -this.#platformHeight, this.#platformWidth, this.#platformHeight)
-      .fill(0x0000ff)
-      .lineTo(this.#platformWidth, this.#platformHeight)
-      .stroke();
+    const skin = new Sprite(this.#assets.getTexture("water0000"));
+    skin.y = -this.#platformHeight;
+    // skin
+    //   .setStrokeStyle({ width: 1, color: 0x0000ff })
+    //   .rect(0, -this.#platformHeight, this.#platformWidth, this.#platformHeight)
+    //   .fill(0x0000ff)
+    //   .lineTo(this.#platformWidth, this.#platformHeight)
+    //   .stroke();
 
     const view = new PlatformView(this.#platformWidth, this.#platformHeight);
     view.addChild(skin);
@@ -70,20 +71,16 @@ export default class PlatformFactory {
   }
 
   createBossWall(x, y) {
-    const skin = new Graphics();
-    skin
-      .setStrokeStyle({ width: 1, color: 0x0000ff })
-      .rect(0, 0, this.#platformWidth * 3, 600)
-      .fill(0x0b1e0f2)
-      .lineTo(this.#platformWidth * 3, 600)
-      .stroke();
+    const skin = new Sprite(this.#assets.getTexture("boss0000"));
+    skin.scale.x = 1.5;
+    skin.scale.y = 1.5;
 
     const view = new PlatformView(this.#platformWidth * 3, 768);
     view.addChild(skin);
 
     const platfom = new Platform(view);
-    platfom.x = x;
-    platfom.y = y;
+    platfom.x = x - 64;
+    platfom.y = y - 45;
     platfom.type = "box";
     this.#worldContainer.background.addChild(view);
 
@@ -91,12 +88,7 @@ export default class PlatformFactory {
   }
 
   createBridge(x, y) {
-    const skin = new Graphics();
-    skin
-      .setStrokeStyle({ width: 1, color: 0x111111 })
-      .rect(0, 0, this.#platformWidth, this.#platformHeight * 3)
-      .fill({ color: 0xffffff })
-      .stroke();
+    const skin = new Sprite(this.#assets.getTexture("bridge0000"));
 
     const view = new PlatformView(this.#platformWidth, this.#platformHeight);
     view.addChild(skin);

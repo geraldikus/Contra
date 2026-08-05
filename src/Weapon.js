@@ -36,7 +36,7 @@ export default class Weapon {
         type: bulletContext.type,
       };
 
-      this.#bulletFactory.createBullet(localBulletContext);
+      this.#bulletFactory.createSpreadGunBullet(localBulletContext);
       angleShift += 10;
     }
   }

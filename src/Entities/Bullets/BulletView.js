@@ -10,16 +10,9 @@ export default class BulletView extends Container {
 
   constructor() {
     super();
-    const view = new Graphics();
 
     this.#collisionBox.width = 5;
     this.#collisionBox.height = 5;
-    view
-      .setStrokeStyle({ width: 1, color: 0xffff00 })
-      .rect(0, 0, 5, 5)
-      .stroke();
-
-    this.addChild(view);
   }
 
   get collisionBox() {
