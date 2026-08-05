@@ -2,9 +2,8 @@ import { Container, Graphics } from "pixi.js";
 import Entity from "../Entity";
 
 export default class Bullet extends Entity {
-  #SPEED = 7; // was 10
   #angle;
-
+  speed = 7; // was 10
   type;
 
   constructor(view, angle) {
@@ -13,7 +12,7 @@ export default class Bullet extends Entity {
   }
 
   update() {
-    this.x += this.#SPEED * Math.cos(this.#angle);
-    this.y += this.#SPEED * Math.sin(this.#angle);
+    this.x += this.speed * Math.cos(this.#angle);
+    this.y += this.speed * Math.sin(this.#angle);
   }
 }

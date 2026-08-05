@@ -72,7 +72,7 @@ export default class Game {
     this.#camera = new Camera(cameraSettings);
 
     this.#weapon = new Weapon(this.#bulletFactory);
-    this.#weapon.setWeapon(2);
+    this.#weapon.setWeapon(1);
   }
 
   update() {
@@ -89,6 +89,7 @@ export default class Game {
     }
 
     this.#camera.update();
+    this.#weapon.update(this.#hero.bulletContext);
   }
 
   #checkDamage(entity) {
@@ -163,13 +164,20 @@ export default class Game {
     const keyA = this.keyboardProcessor.getButton("KeyA");
     keyA.executeDown = function () {
       if (!this.#hero.isDead && !this.#hero.isFall) {
-        this.#weapon.fire(this.#hero.bulletContext);
+        const bullets = this.#entities.filter(
+          (bullet) => bullet.type == this.#hero.bulletContext.type,
+        );
+        if (bullets.length > 10) {
+          return;
+        }
+        this.#weapon.startFire();
         this.#hero.setView(this.getArrowButtonContext());
       }
     };
 
     keyA.executeUp = function () {
       if (!this.#hero.isDead && !this.#hero.isFall) {
+        this.#weapon.stopFire();
         this.#hero.setView(this.getArrowButtonContext());
       }
     };
