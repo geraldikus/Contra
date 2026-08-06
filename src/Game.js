@@ -121,6 +121,18 @@ export default class Game {
       enemies.forEach((e) => e.dead());
       this.#isEndGame = true;
     }
+
+    const isHeroDead =
+      !this.#entities.some((e) => e.type == "hero") && this.#hero.isDead;
+
+    if (isHeroDead) {
+      this.#entities.push(this.#hero);
+      this.#worldContainer.game.addChild(this.#hero._view);
+      this.#hero.reset();
+      this.#hero.x = -this.#worldContainer.x + 160;
+      this.#hero.y = 100;
+      this.#weapon.setWeapon(1);
+    }
   }
 
   #checkDamage(entity) {
