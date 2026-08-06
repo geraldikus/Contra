@@ -4,6 +4,8 @@ export default class Powerup extends Entity {
   #powerupFactory;
   #flyY;
   #target;
+  #velocityX = 3;
+  #velocityY = 50;
 
   type = "powerupBox";
 
@@ -45,8 +47,8 @@ export default class Powerup extends Entity {
       }
       return;
     }
-    this.x += 3;
-    this.y = this.#flyY + Math.sin(this.x * 0.02) * 50;
+    this.x += this.#velocityX;
+    this.y = this.#flyY + Math.sin(this.x * 0.02) * this.#velocityY;
   }
 
   damage() {
@@ -54,6 +56,12 @@ export default class Powerup extends Entity {
       return;
     }
     this.#powerupFactory.createSpreadGunPowerup(this.x, this.y);
-    this.dead();
+    // this.dead();
+    this.#velocityX = 0;
+    this.#velocityY = 0;
+    const deadAnimation = this._view.showAndGetDeadAnimation();
+    deadAnimation.onComplete = () => {
+      this.dead();
+    };
   }
 }

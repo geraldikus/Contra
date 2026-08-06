@@ -37,7 +37,11 @@ export default class Tourelle extends Entity {
   damage() {
     this.#health--;
     if (this.#health < 1) {
-      this.dead();
+      this.#timeCounter = 0;
+      const deadAnimation = this._view.showAndGetDeadAnimation();
+      deadAnimation.onComplete = () => {
+        this.dead();
+      };
     }
   }
 
