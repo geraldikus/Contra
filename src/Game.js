@@ -22,6 +22,7 @@ export default class Game {
   #runnerFactory;
   #worldContainer;
   #weapon;
+  #isEndGame = false;
 
   keyboardProcessor;
 
@@ -104,6 +105,22 @@ export default class Game {
 
     this.#camera.update();
     this.#weapon.update(this.#hero.bulletContext);
+
+    this.#checkGameStatus();
+  }
+
+  #checkGameStatus() {
+    if (this.#isEndGame) {
+      return;
+    }
+    const isBossDead = this.#entities.some((e) => e.isBoss && !e.isActive);
+    if (isBossDead) {
+      const enemies = this.#entities.filter(
+        (e) => e.type == "enemy" && !e.isBoss,
+      );
+      enemies.forEach((e) => e.dead());
+      this.#isEndGame = true;
+    }
   }
 
   #checkDamage(entity) {
@@ -172,7 +189,11 @@ export default class Game {
       character.stay(platform.y);
     }
 
-    if (collisionResult.horizontal == true && platform.type == "box") {
+    if (
+      collisionResult.horizontal == true &&
+      platform.type == "box" &&
+      !character.isForbiddenHorizontalCollision
+    ) {
       if (platform.isStep) {
         character.stay(platform.y);
       } else {
