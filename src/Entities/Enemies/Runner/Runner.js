@@ -9,8 +9,8 @@ const States = {
 };
 
 export default class Runner extends Entity {
-  #GRAVITY_FORCE = 0.2; // was 0.2
-  #SPEED = 2.5;
+  #GRAVITY_FORCE = 0.4; // was 0.2
+  #SPEED = 4; // was 2.5
   #JUMP_FORCE = 9.5; // was 9
   #velocityX = 0;
   #velocityY = 0;

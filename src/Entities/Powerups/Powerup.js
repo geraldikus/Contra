@@ -4,7 +4,7 @@ export default class Powerup extends Entity {
   #powerupFactory;
   #flyY;
   #target;
-  #velocityX = 3;
+  #velocityX = 6;
   #velocityY = 50;
 
   type = "powerupBox";
