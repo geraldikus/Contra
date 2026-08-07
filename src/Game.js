@@ -25,6 +25,9 @@ export default class Game {
   #weapon;
   #isEndGame = false;
 
+  #isStartScreen = true;
+  #startScreen = null;
+
   keyboardProcessor;
 
   constructor(pixiApp, assets) {
@@ -74,7 +77,7 @@ export default class Game {
     sceneFactory.createScene();
 
     this.keyboardProcessor = new KeyboardProcessor(this);
-    this.setKeys();
+    // this.setKeys();
 
     const cameraSettings = {
       target: this.#hero,
@@ -87,12 +90,13 @@ export default class Game {
 
     this.#weapon = new Weapon(this.#bulletFactory);
     this.#weapon.setWeapon(1);
+    this.#showStartGameScreen();
   }
 
-  update() {
+  update(delta) {
     for (let i = 0; i < this.#entities.length; i++) {
       const entity = this.#entities[i];
-      entity.update();
+      entity.update(delta);
 
       if (
         entity.type == "hero" ||
@@ -109,7 +113,6 @@ export default class Game {
 
     this.#camera.update();
     this.#weapon.update(this.#hero.bulletContext);
-
     this.#checkGameStatus();
   }
 
@@ -138,6 +141,83 @@ export default class Game {
       this.#hero.y = 100;
       this.#weapon.setWeapon(1);
     }
+  }
+
+  #showStartGameScreen() {
+    const startScreen = new Container();
+    this.#startScreen = startScreen;
+
+    const titleStyle = new TextStyle({
+      fontFamily: "Impact",
+      fontSize: 48,
+      fill: 0xffffff,
+      stroke: { color: 0x000000, width: 4 },
+    });
+
+    const textStyle = new TextStyle({
+      fontFamily: "Arial",
+      fontSize: 22,
+      fill: 0xffffff,
+      align: "center",
+      stroke: { color: 0x000000, width: 2 },
+    });
+
+    const title = new Text({ text: "WELCOME TO CONTRA", style: titleStyle });
+    title.x = this.#pixiApp.screen.width / 2 - title.width / 2;
+    title.y = 80;
+    startScreen.addChild(title);
+
+    const controls = new Text({
+      text: "← → — move\n" + "↑ ↓ — aim\n" + "S — jump\n" + "A — shoot",
+      style: textStyle,
+    });
+    controls.x = this.#pixiApp.screen.width / 2 - controls.width / 2;
+    controls.y = title.y + title.height + 40;
+    startScreen.addChild(controls);
+
+    // Кнопка START (как RESTART в end screen)
+    const buttonWidth = 220;
+    const buttonHeight = 50;
+    const button = new Container();
+
+    const bg = new Graphics()
+      .roundRect(0, 0, buttonWidth, buttonHeight, 8)
+      .fill(0x222222)
+      .stroke({ color: 0xffffff, width: 2 });
+
+    const buttonStyle = new TextStyle({
+      fontFamily: "Impact",
+      fontSize: 24,
+      fill: 0xffffff,
+    });
+
+    const buttonText = new Text({ text: "START", style: buttonStyle });
+    buttonText.x = (buttonWidth - buttonText.width) / 2;
+    buttonText.y = (buttonHeight - buttonText.height) / 2;
+    button.addChild(bg, buttonText);
+
+    button.x = this.#pixiApp.screen.width / 2 - buttonWidth / 2;
+    button.y = controls.y + controls.height + 50;
+
+    button.eventMode = "static";
+    button.cursor = "pointer";
+    button.on("pointerdown", () => {
+      this.#hideStartGameScreen();
+    });
+
+    startScreen.addChild(button);
+    this.#pixiApp.stage.addChild(startScreen);
+  }
+
+  #hideStartGameScreen() {
+    this.setKeys();
+    this.#isStartScreen = false;
+    if (this.#startScreen) {
+      this.#startScreen.removeFromParent();
+      this.#startScreen.destroy({ children: true });
+      this.#startScreen = null;
+    }
+    console.log((this.#isStartScreen = false));
   }
 
   #showEndGame() {
@@ -365,6 +445,9 @@ export default class Game {
 
   #checkEntityStatus(entity, index) {
     if (entity.isDead || this.#isScreenOut(entity)) {
+      if (entity.type === "hero" && this.#isScreenOut(entity)) {
+        entity.dead(); // ← добавить
+      }
       entity.removeFromStage();
       this.#entities.splice(index, 1);
     }

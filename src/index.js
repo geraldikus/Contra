@@ -8,6 +8,8 @@ await pixiApp.init({
   height: 768,
 });
 
+pixiApp.ticker.maxFPS = 60;
+
 await PIXI.Assets.load("./assets/atlas.json");
 
 const assets = new AssetsFactory();
@@ -22,7 +24,11 @@ document.addEventListener("keyup", (key) => {
   game.keyboardProcessor.onKeyUp(key);
 });
 
-pixiApp.ticker.add(game.update, game);
+pixiApp.ticker.add((ticker) => {
+  game.update(ticker.deltaTime);
+}, game);
+
+// pixiApp.ticker.add(game.update, game);
 
 // pixiApp.ticker.add((ticker) => {
 //   if (ticker.lastTime % 60 < 1) {

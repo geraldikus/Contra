@@ -3,7 +3,7 @@ import Entity from "../Entity";
 
 export default class Bullet extends Entity {
   #angle;
-  speed = 7; // was 10
+  speed = 10; // was 10
   type;
 
   constructor(view, angle) {

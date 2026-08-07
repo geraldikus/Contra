@@ -9,9 +9,9 @@ const States = {
 };
 
 export default class Hero extends Entity {
-  #GRAVITY_FORCE = 0.2; // was 0.2
-  #SPEED = 2.5; // was 2.5
-  #JUMP_FORCE = 9.5; // was 9
+  #GRAVITY_FORCE = 0.4; // was 0.2
+  #SPEED = 5; // was 2.5
+  #JUMP_FORCE = 13; // was 9.5
   #velocityX = 0;
   #velocityY = 0;
 
@@ -57,12 +57,12 @@ export default class Hero extends Entity {
     return this.#prevPoint;
   }
 
-  update() {
+  update(delta = 1) {
     this.#prevPoint.x = this.x;
     this.#prevPoint.y = this.y;
 
     this.#velocityX = this.#movement.x * this.#SPEED;
-    this.x += this.#velocityX;
+    this.x += this.#velocityX * delta;
 
     if (this.#velocityY > 0) {
       if (!(this.#state == States.Jump || this.#state == States.FlyDown)) {
@@ -72,8 +72,8 @@ export default class Hero extends Entity {
       this.#state = States.FlyDown;
     }
 
-    this.#velocityY += this.#GRAVITY_FORCE;
-    this.y += this.#velocityY;
+    this.#velocityY += this.#GRAVITY_FORCE * delta; // было: += this.#GRAVITY_FORCE
+    this.y += this.#velocityY * delta;
   }
 
   damage() {
@@ -191,7 +191,7 @@ export default class Hero extends Entity {
   }
 
   reset() {
-    this.#GRAVITY_FORCE = 0.2;
+    this.#GRAVITY_FORCE = 0.4;
     this._view.reset();
     this.resuraction();
   }
