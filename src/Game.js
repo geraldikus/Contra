@@ -2,7 +2,7 @@ import Platform from "./Entities/Platforms/Platform.js";
 import PlatformFactory from "./Entities/Platforms/PlatformFactory.js";
 import KeyboardProcessor from "./KeyboardProcessor.js";
 import Camera from "./Camera.js";
-import { Container } from "pixi.js";
+import { Container, FillGradient, Graphics, Text, TextStyle } from "pixi.js";
 import BulletFactory from "./Entities/Bullets/BulletFactory.js";
 import HeroFactory from "./Entities/Hero/HeroFactory.js";
 import Physics from "./Physics.js";
@@ -120,6 +120,7 @@ export default class Game {
       );
       enemies.forEach((e) => e.dead());
       this.#isEndGame = true;
+      this.#showEndGame();
     }
 
     const isHeroDead =
@@ -133,6 +134,59 @@ export default class Game {
       this.#hero.y = 100;
       this.#weapon.setWeapon(1);
     }
+  }
+
+  #showEndGame() {
+    const endScreen = new Container();
+    const gradient = new FillGradient(0, 0, 0, 1)
+      .addColorStop(0, 0xffffff)
+      .addColorStop(1, 0xdd0000);
+
+    const style = new TextStyle({
+      fontFamily: "Impact",
+      fontSize: 50,
+      fill: gradient,
+      stroke: { color: 0x000000, width: 5 },
+      letterSpacing: 30,
+    });
+
+    const text = new Text({ text: "STAGE CLEAR", style });
+    text.x = this.#pixiApp.screen.width / 2 - text.width / 2;
+    text.y = this.#pixiApp.screen.height / 2 - text.height / 2;
+    endScreen.addChild(text);
+
+    // Button
+    const buttonWidth = 220;
+    const buttonHeight = 50;
+    const button = new Container();
+    const bg = new Graphics()
+      .roundRect(0, 0, buttonWidth, buttonHeight, 8)
+      .fill(0x222222)
+      .stroke({ color: 0xffffff, width: 2 });
+    const buttonStyle = new TextStyle({
+      fontFamily: "Impact",
+      fontSize: 24,
+      fill: 0xffffff,
+    });
+    const buttonText = new Text({ text: "RESTART", style: buttonStyle });
+    buttonText.x = (buttonWidth - buttonText.width) / 2;
+    buttonText.y = (buttonHeight - buttonText.height) / 2;
+    button.addChild(bg, buttonText);
+
+    button.x = this.#pixiApp.screen.width / 2 - buttonWidth / 2;
+    button.y = text.y + text.height + 30;
+
+    button.eventMode = "static";
+    button.cursor = "pointer";
+    button.on("pointerdown", () => {
+      this.#restartGame();
+    });
+    endScreen.addChild(button);
+    this.#pixiApp.stage.addChild(endScreen);
+  }
+
+  #restartGame() {
+    location.reload();
   }
 
   #checkDamage(entity) {
