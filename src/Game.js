@@ -11,6 +11,7 @@ import World from "./World.js";
 import SceneFactory from "./SceneFactory.js";
 import EnemiesFactory from "./Entities/Enemies/Runner/EnemiesFactory.js";
 import PowerupsFactory from "./Entities/Powerups/PowerupsFactory.js";
+import StaticBackground from "./StaticBackground.js";
 
 export default class Game {
   #pixiApp;
@@ -29,6 +30,9 @@ export default class Game {
   constructor(pixiApp, assets) {
     this.#pixiApp = pixiApp;
     this.#worldContainer = new World();
+    this.#pixiApp.stage.addChild(
+      new StaticBackground(this.#pixiApp.screen, assets),
+    );
     this.#pixiApp.stage.addChild(this.#worldContainer);
 
     const heroFactory = new HeroFactory(this.#worldContainer.game, assets);

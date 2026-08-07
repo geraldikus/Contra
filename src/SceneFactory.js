@@ -24,6 +24,7 @@ export default class SceneFactory {
   }
 
   createScene() {
+    this.#createDecorations();
     this.#createPlatforms();
     this.#createGround();
     this.#createWater();
@@ -31,6 +32,12 @@ export default class SceneFactory {
     this.#createEnemies();
     this.#createInteractive();
     this.#createPowerups();
+  }
+
+  #createDecorations() {
+    for (let i = 22; i < 52; i++) {
+      this.#platformFactory.createJungle(this.#blockSize * i, 0);
+    }
   }
 
   #createPlatforms() {

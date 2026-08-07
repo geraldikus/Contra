@@ -49,17 +49,11 @@ export default class PlatformFactory {
   }
 
   createWater(x, y) {
-    const skin = new Sprite(this.#assets.getTexture("water0000"));
-    skin.y = -this.#platformHeight;
-    // skin
-    //   .setStrokeStyle({ width: 1, color: 0x0000ff })
-    //   .rect(0, -this.#platformHeight, this.#platformWidth, this.#platformHeight)
-    //   .fill(0x0000ff)
-    //   .lineTo(this.#platformWidth, this.#platformHeight)
-    //   .stroke();
+    const waterTop = new Sprite(this.#assets.getTexture("water0000"));
+    waterTop.y = -this.#platformHeight;
 
     const view = new PlatformView(this.#platformWidth, this.#platformHeight);
-    view.addChild(skin);
+    view.addChild(waterTop);
 
     const platfom = new Platform(view);
     platfom.x = x;
@@ -99,6 +93,27 @@ export default class PlatformFactory {
     this.#worldContainer.background.addChild(view);
 
     return platfom;
+  }
+
+  createJungle(x, y) {
+    const jungleTop = new Sprite(this.#assets.getTexture("jungletop0000"));
+    for (let i = 1; i < 5; i++) {
+      const jungleBottom = this.#createJungleBottom(jungleTop);
+      jungleBottom.y = jungleTop.height * i - 2 * i;
+    }
+    jungleTop.x = x;
+    jungleTop.y = y;
+
+    this.#worldContainer.background.addChild(jungleTop);
+  }
+
+  #createJungleBottom(jungleTop) {
+    const jungleBottom = new Sprite(
+      this.#assets.getTexture("junglebottom0000"),
+    );
+    jungleTop.addChild(jungleBottom);
+
+    return jungleBottom;
   }
 
   #getGroundPlatform() {
