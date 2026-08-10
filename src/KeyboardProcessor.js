@@ -48,4 +48,20 @@ export default class KeyboardProcessor {
   isButtonPressed(keyName) {
     return this.#keyMap[keyName]?.isDown;
   }
+
+  pressButton(keyName) {
+    const button = this.#keyMap[keyName];
+    if (button && !button.isDown) {
+      button.isDown = true;
+      button.executeDown?.call(this.#gameContext);
+    }
+  }
+
+  releaseButton(keyName) {
+    const button = this.#keyMap[keyName];
+    if (button && button.isDown) {
+      button.isDown = false;
+      button.executeUp?.call(this.#gameContext);
+    }
+  }
 }

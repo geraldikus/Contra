@@ -22,6 +22,91 @@ body {
   align-items: center;
 }
 
+#app-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#game-view {
+  line-height: 0;
+}
+
+#touch-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 160px;
+  padding: 12px 28px 16px;
+  box-sizing: border-box;
+}
+
+#touch-controls-bar[hidden] {
+  display: none;
+}
+
+.touch-controls-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.touch-controls-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+
+.touch-btn {
+  width: 72px;
+  height: 72px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  background: rgba(51, 51, 51, 0.65);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  touch-action: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-btn--pressed {
+  background: rgba(85, 85, 85, 0.85);
+}
+
+.virtual-joystick {
+  width: 150px;
+  height: 150px;
+}
+
+.virtual-joystick__base {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  background: rgba(51, 51, 51, 0.5);
+  touch-action: none;
+}
+
+.virtual-joystick__stick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin: -25px 0 0 -25px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  transform: translate(0, 0);
+  pointer-events: none;
+}
+
 canvas {
   display: block;
   image-rendering: pixelated;

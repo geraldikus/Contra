@@ -12,6 +12,7 @@ import SceneFactory from "./SceneFactory.js";
 import EnemiesFactory from "./Entities/Enemies/Runner/EnemiesFactory.js";
 import PowerupsFactory from "./Entities/Powerups/PowerupsFactory.js";
 import StaticBackground from "./StaticBackground.js";
+import { buildStartScreen } from "./Onboarding/index.js";
 
 export default class Game {
   #pixiApp;
@@ -27,11 +28,14 @@ export default class Game {
 
   #isStartScreen = true;
   #startScreen = null;
+  #isTouchDevice = false;
+  #touchControlsManager = null;
 
   keyboardProcessor;
 
-  constructor(pixiApp, assets) {
+  constructor(pixiApp, assets, options = {}) {
     this.#pixiApp = pixiApp;
+    this.#isTouchDevice = options.isTouchDevice ?? false;
     this.#worldContainer = new World();
     this.#pixiApp.stage.addChild(
       new StaticBackground(this.#pixiApp.screen, assets),
@@ -144,69 +148,17 @@ export default class Game {
   }
 
   #showStartGameScreen() {
-    const startScreen = new Container();
-    this.#startScreen = startScreen;
-
-    const titleStyle = new TextStyle({
-      fontFamily: "Impact",
-      fontSize: 48,
-      fill: 0xffffff,
-      stroke: { color: 0x000000, width: 4 },
+    this.#startScreen = buildStartScreen({
+      screenWidth: this.#pixiApp.screen.width,
+      screenHeight: this.#pixiApp.screen.height,
+      isTouchDevice: this.#isTouchDevice,
+      onStart: () => this.#hideStartGameScreen(),
     });
+    this.#pixiApp.stage.addChild(this.#startScreen);
+  }
 
-    const textStyle = new TextStyle({
-      fontFamily: "Arial",
-      fontSize: 22,
-      fill: 0xffffff,
-      align: "center",
-      stroke: { color: 0x000000, width: 2 },
-    });
-
-    const title = new Text({ text: "WELCOME TO CONTRA", style: titleStyle });
-    title.x = this.#pixiApp.screen.width / 2 - title.width / 2;
-    title.y = 80;
-    startScreen.addChild(title);
-
-    const controls = new Text({
-      text: "← → — move\n" + "↑ ↓ — aim\n" + "S — jump\n" + "A — shoot",
-      style: textStyle,
-    });
-    controls.x = this.#pixiApp.screen.width / 2 - controls.width / 2;
-    controls.y = title.y + title.height + 40;
-    startScreen.addChild(controls);
-
-    // Кнопка START (как RESTART в end screen)
-    const buttonWidth = 220;
-    const buttonHeight = 50;
-    const button = new Container();
-
-    const bg = new Graphics()
-      .roundRect(0, 0, buttonWidth, buttonHeight, 8)
-      .fill(0x222222)
-      .stroke({ color: 0xffffff, width: 2 });
-
-    const buttonStyle = new TextStyle({
-      fontFamily: "Impact",
-      fontSize: 24,
-      fill: 0xffffff,
-    });
-
-    const buttonText = new Text({ text: "START", style: buttonStyle });
-    buttonText.x = (buttonWidth - buttonText.width) / 2;
-    buttonText.y = (buttonHeight - buttonText.height) / 2;
-    button.addChild(bg, buttonText);
-
-    button.x = this.#pixiApp.screen.width / 2 - buttonWidth / 2;
-    button.y = controls.y + controls.height + 50;
-
-    button.eventMode = "static";
-    button.cursor = "pointer";
-    button.on("pointerdown", () => {
-      this.#hideStartGameScreen();
-    });
-
-    startScreen.addChild(button);
-    this.#pixiApp.stage.addChild(startScreen);
+  setTouchControlsManager(manager) {
+    this.#touchControlsManager = manager;
   }
 
   #hideStartGameScreen() {
@@ -217,7 +169,7 @@ export default class Game {
       this.#startScreen.destroy({ children: true });
       this.#startScreen = null;
     }
-    console.log((this.#isStartScreen = false));
+    this.#touchControlsManager?.show();
   }
 
   #showEndGame() {

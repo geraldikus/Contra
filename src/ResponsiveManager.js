@@ -44,8 +44,13 @@ export default class ResponsiveManager {
     const maxHeight = 768;
     const maxScale = maxHeight / this.#baseHeight;
 
+    const touchBar = document.getElementById("touch-controls-bar");
+    const barHeight =
+      touchBar && !touchBar.hidden ? touchBar.offsetHeight : 0;
+    const availableHeight = windowHeight - barHeight;
+
     const scaleX = windowWidth / this.#baseWidth;
-    const scaleY = windowHeight / this.#baseHeight;
+    const scaleY = availableHeight / this.#baseHeight;
     const scale = Math.min(scaleX, scaleY, maxScale);
 
     const canvas = this.#pixiApp.canvas;
@@ -55,6 +60,10 @@ export default class ResponsiveManager {
     // Внутренний буфер рендерера остаётся 1024×768; масштаб только через CSS.
     canvas.style.width = `${newWidth}px`;
     canvas.style.height = `${newHeight}px`;
+
+    if (touchBar && !touchBar.hidden) {
+      touchBar.style.width = `${newWidth}px`;
+    }
   }
 
   #showHorizontalWarning() {
