@@ -1,5 +1,6 @@
 import AssetsFactory from "./AssetsFactory.js";
 import Game from "./Game.js";
+import ResponsiveManager from "./ResponsiveManager.js";
 import * as PIXI from "pixi.js";
 
 const pixiApp = new PIXI.Application();
@@ -17,6 +18,9 @@ const assets = new AssetsFactory();
 const game = new Game(pixiApp, assets);
 
 document.body.appendChild(pixiApp.canvas);
+
+const responsiveManager = new ResponsiveManager(pixiApp);
+
 document.addEventListener("keydown", (key) => {
   game.keyboardProcessor.onKeyDown(key);
 });
