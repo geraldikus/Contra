@@ -14,6 +14,7 @@ export default class Hero extends Entity {
   #JUMP_FORCE = 13; // was 9.5
   #velocityX = 0;
   #velocityY = 0;
+  #invincibleUntil = 0;
 
   #movement = {
     x: 0,
@@ -74,6 +75,14 @@ export default class Hero extends Entity {
 
     this.#velocityY += this.#GRAVITY_FORCE * delta; // было: += this.#GRAVITY_FORCE
     this.y += this.#velocityY * delta;
+
+    if (this.isInvincible) {
+      const blinkSpeed = 100;
+      const phase = Math.floor(performance.now() / blinkSpeed) % 2;
+      this._view.alpha = phase === 0 ? 0.3 : 1.0;
+    } else {
+      this._view.alpha = 1.0;
+    }
   }
 
   damage() {
@@ -192,7 +201,24 @@ export default class Hero extends Entity {
 
   reset() {
     this.#GRAVITY_FORCE = 0.4;
+    this.#velocityX = 0;
+    this.#velocityY = 0;
+    this.#movement.x = 0;
+    this.#movement.y = 0;
+    this.#directionContext.left = 0;
+    this.#directionContext.right = 0;
+    this.#state = States.Jump;
+    this.isFall = false;
     this._view.reset();
+    this._view.showJump();
     this.resuraction();
+  }
+
+  setInvincible(ms) {
+    this.#invincibleUntil = performance.now() + ms;
+  }
+
+  get isInvincible() {
+    return performance.now() < this.#invincibleUntil;
   }
 }

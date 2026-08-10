@@ -141,9 +141,39 @@ export default class Game {
       this.#entities.push(this.#hero);
       this.#worldContainer.game.addChild(this.#hero._view);
       this.#hero.reset();
-      this.#hero.x = -this.#worldContainer.x + 160;
-      this.#hero.y = 100;
+
+      const spawnX = -this.#worldContainer.x + 160;
+      const spawnY = 100;
+      this.#hero.x = spawnX;
+      this.#hero.y = spawnY;
+
+      this.#spawnHeroOnGround(spawnX);
+      this.#hero.setInvincible(1000);
       this.#weapon.setWeapon(1);
+    }
+  }
+
+  #spawnHeroOnGround(spawnX) {
+    let groundY = null;
+    let groundPlatform = null;
+
+    const heroWidth = this.#hero.collisionBox.width;
+
+    for (const platform of this.#platforms) {
+      if (!platform.isActive) continue;
+
+      const box = platform.collisionBox;
+
+      if (spawnX + heroWidth > box.x && spawnX < box.x + box.width) {
+        if (groundY === null || box.y < groundY) {
+          groundY = box.y;
+          groundPlatform = platform;
+        }
+      }
+    }
+
+    if (groundPlatform !== null) {
+      this.#hero.stay(groundY);
     }
   }
 
@@ -226,6 +256,10 @@ export default class Game {
   }
 
   #checkDamage(entity) {
+    if (entity.type === "hero" && entity.isInvincible) {
+      return;
+    }
+
     const damagers = this.#entities.filter(
       (damager) =>
         ((entity.type == "enemy" || entity.type == "powerupBox") &&
@@ -396,9 +430,21 @@ export default class Game {
   }
 
   #checkEntityStatus(entity, index) {
+    if (
+      entity.type === "hero" &&
+      this.#isScreenOut(entity) &&
+      entity.isInvincible
+    ) {
+      const spawnX = -this.#worldContainer.x + 160;
+      entity.x = spawnX;
+      entity.y = 100;
+      this.#spawnHeroOnGround(spawnX);
+      return;
+    }
+
     if (entity.isDead || this.#isScreenOut(entity)) {
       if (entity.type === "hero" && this.#isScreenOut(entity)) {
-        entity.dead(); // ← добавить
+        entity.dead();
       }
       entity.removeFromStage();
       this.#entities.splice(index, 1);
